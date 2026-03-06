@@ -51,14 +51,18 @@ const Hero = () => {
             transition={{ duration: 0.6, delay: 0.5 }}
             className="hidden md:flex items-center justify-center"
           >
-            <div className="w-64 h-64 lg:w-72 lg:h-72 rounded-2xl bg-secondary border-2 border-border overflow-hidden flex items-center justify-center relative group">
-              {/* Replace src with your photo */}
-              <img
-                src="/placeholder.svg"
-                alt="Profile photo"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 flex items-center justify-center bg-secondary/80 opacity-100 group-hover:opacity-0 transition-opacity pointer-events-none">
+            <div className="w-[268px] h-[268px] lg:w-[296px] lg:h-[296px] rounded-2xl overflow-hidden relative group shadow-xl ring-1 ring-border/60">
+              {/* Textured professional frame */}
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-accent/20 via-secondary to-accent/10 p-[3px]">
+                <div className="w-full h-full rounded-[13px] overflow-hidden bg-secondary">
+                  <img
+                    src="/placeholder.svg"
+                    alt="Profile photo"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
+              <div className="absolute inset-0 flex items-center justify-center bg-secondary/80 opacity-100 group-hover:opacity-0 transition-opacity duration-300 pointer-events-none rounded-2xl">
                 <div className="text-center">
                   <User size={40} className="mx-auto text-muted-foreground mb-2" />
                   <p className="text-xs text-muted-foreground">Your Photo</p>

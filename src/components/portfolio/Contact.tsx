@@ -5,29 +5,61 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Mail, Github, Linkedin, Phone, Send, MessageCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import emailjs from "@emailjs/browser";
 
 const Contact = () => {
   const { toast } = useToast();
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [sending, setSending] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.name.trim() || !form.email.trim() || !form.message.trim()) {
-      toast({ title: "Please fill all fields", variant: "destructive" });
+      toast({
+        title: "Please fill all fields",
+        variant: "destructive",
+        className: "bg-red-600 text-white border-red-700",
+      });
       return;
     }
+
     setSending(true);
-    // Simulate sending — replace with actual API call
-    setTimeout(() => {
-      toast({ title: "Message sent!", description: "I'll get back to you soon." });
+
+    try {
+      await emailjs.send(
+        "YOUR_SERVICE_ID",   // ← Replace with your EmailJS Service ID
+        "YOUR_TEMPLATE_ID",  // ← Replace with your EmailJS Template ID
+        {
+          from_name: form.name,
+          reply_to: form.email,
+          message: form.message,
+        },
+        "YOUR_PUBLIC_KEY"    // ← Replace with your EmailJS Public Key
+      );
+
+      toast({
+        title: "Message sent!",
+        description: "I'll get back to you soon.",
+        className: "bg-green-600 text-white border-green-700",
+      });
       setForm({ name: "", email: "", message: "" });
+    } catch (error) {
+      console.error("EmailJS Error:", error);
+      toast({
+        title: "Failed to send message",
+        description: "Please try again later.",
+        variant: "destructive",
+        className: "bg-red-600 text-white border-red-700",
+      });
+    } finally {
       setSending(false);
-    }, 1000);
+    }
   };
 
-  const whatsappNumber = "911234567890"; // Replace with your number
-  const whatsappMessage = encodeURIComponent("Hello Man! I'm reaching you regarding your portfolio. I'd like to discuss a potential opportunity.");
+  const whatsappNumber = "911234567890"; // ← Replace with your WhatsApp number
+  const whatsappMessage = encodeURIComponent(
+    "Hello Man! I'm reaching you regarding your portfolio. I'd like to discuss a potential opportunity."
+  );
   const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
 
   return (
@@ -74,6 +106,7 @@ const Contact = () => {
             <form onSubmit={handleSubmit} className="space-y-4 mb-10">
               <div className="grid sm:grid-cols-2 gap-4">
                 <Input
+                  id="name"
                   placeholder="Your Name"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -81,6 +114,7 @@ const Contact = () => {
                   className="bg-secondary/50 border-border"
                 />
                 <Input
+                  id="email"
                   type="email"
                   placeholder="Your Email"
                   value={form.email}
@@ -90,6 +124,7 @@ const Contact = () => {
                 />
               </div>
               <Textarea
+                id="message"
                 placeholder="Your Message"
                 value={form.message}
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
