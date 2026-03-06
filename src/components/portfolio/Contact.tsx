@@ -1,8 +1,35 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Mail, Github, Linkedin } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Mail, Github, Linkedin, Phone, Send, MessageCircle } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const Contact = () => {
+  const { toast } = useToast();
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [sending, setSending] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.name.trim() || !form.email.trim() || !form.message.trim()) {
+      toast({ title: "Please fill all fields", variant: "destructive" });
+      return;
+    }
+    setSending(true);
+    // Simulate sending — replace with actual API call
+    setTimeout(() => {
+      toast({ title: "Message sent!", description: "I'll get back to you soon." });
+      setForm({ name: "", email: "", message: "" });
+      setSending(false);
+    }, 1000);
+  };
+
+  const whatsappNumber = "911234567890"; // Replace with your number
+  const whatsappMessage = encodeURIComponent("Hello Man! I'm reaching you regarding your portfolio. I'd like to discuss a potential opportunity.");
+  const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
+
   return (
     <section id="contact" className="section-padding border-t border-border">
       <div className="max-w-6xl mx-auto">
@@ -20,28 +47,74 @@ const Contact = () => {
             <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-6">
               Let's work together
             </h2>
-            <p className="text-muted-foreground leading-relaxed mb-10 max-w-lg">
+            <p className="text-muted-foreground leading-relaxed mb-8 max-w-lg">
               I'm always interested in hearing about new projects and opportunities.
               Whether you have a question or just want to say hi, feel free to reach out.
             </p>
 
-            <div className="flex flex-wrap gap-4 mb-12">
-              <Button variant="hero" size="lg" asChild>
-                <a href="mailto:hello@johndoe.dev">
-                  <Mail size={16} />
-                  Send an Email
-                </a>
-              </Button>
+            {/* Contact Info */}
+            <div className="flex flex-wrap gap-6 mb-10">
+              <a
+                href="mailto:hello@johndoe.dev"
+                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <Mail size={16} className="text-accent" />
+                hello@johndoe.dev
+              </a>
+              <a
+                href="tel:+911234567890"
+                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <Phone size={16} className="text-accent" />
+                +91 12345 67890
+              </a>
             </div>
 
+            {/* Message Form */}
+            <form onSubmit={handleSubmit} className="space-y-4 mb-10">
+              <div className="grid sm:grid-cols-2 gap-4">
+                <Input
+                  placeholder="Your Name"
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  maxLength={100}
+                  className="bg-secondary/50 border-border"
+                />
+                <Input
+                  type="email"
+                  placeholder="Your Email"
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  maxLength={255}
+                  className="bg-secondary/50 border-border"
+                />
+              </div>
+              <Textarea
+                placeholder="Your Message"
+                value={form.message}
+                onChange={(e) => setForm({ ...form, message: e.target.value })}
+                maxLength={1000}
+                rows={5}
+                className="bg-secondary/50 border-border resize-none"
+              />
+              <Button variant="hero" size="lg" type="submit" disabled={sending}>
+                <Send size={16} />
+                {sending ? "Sending..." : "Send Message"}
+              </Button>
+            </form>
+
+            {/* Social Links */}
             <div className="flex items-center gap-6">
               {[
                 { icon: Github, label: "GitHub", href: "#" },
                 { icon: Linkedin, label: "LinkedIn", href: "#" },
+                { icon: MessageCircle, label: "WhatsApp", href: whatsappLink },
               ].map(({ icon: Icon, label, href }) => (
                 <a
                   key={label}
                   href={href}
+                  target={label === "WhatsApp" ? "_blank" : undefined}
+                  rel={label === "WhatsApp" ? "noopener noreferrer" : undefined}
                   className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <Icon size={16} />

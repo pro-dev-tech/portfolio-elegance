@@ -2,16 +2,34 @@ import { useState, useEffect } from "react";
 import { Moon, Sun, Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const navItems = ["About", "Projects", "Skills", "Contact"];
+const navItems = ["About", "Education", "Projects", "Skills", "Contact"];
 
 const Header = () => {
   const [isDark, setIsDark] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("");
 
   useEffect(() => {
-    const onScroll = () => setIsScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll);
+    const onScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+
+      // Determine active section
+      const sections = navItems.map((item) => item.toLowerCase());
+      let current = "";
+      for (const id of sections) {
+        const el = document.getElementById(id);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= 120) {
+            current = id;
+          }
+        }
+      }
+      setActiveSection(current);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
@@ -43,9 +61,19 @@ const Header = () => {
             <button
               key={item}
               onClick={() => scrollTo(item)}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium"
+              className="relative text-sm font-medium transition-colors py-1"
+              style={{ color: activeSection === item.toLowerCase() ? undefined : undefined }}
             >
-              {item}
+              <span className={activeSection === item.toLowerCase() ? "text-foreground" : "text-muted-foreground hover:text-foreground"}>
+                {item}
+              </span>
+              {activeSection === item.toLowerCase() && (
+                <motion.div
+                  layoutId="nav-underline"
+                  className="absolute -bottom-1 left-0 right-0 h-0.5 bg-accent rounded-full"
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                />
+              )}
             </button>
           ))}
           <button
@@ -86,8 +114,15 @@ const Header = () => {
                 <button
                   key={item}
                   onClick={() => scrollTo(item)}
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium text-left"
+                  className={`text-sm font-medium transition-colors text-left flex items-center gap-2 ${
+                    activeSection === item.toLowerCase()
+                      ? "text-foreground"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
                 >
+                  {activeSection === item.toLowerCase() && (
+                    <span className="w-2 h-2 rounded-full bg-accent" />
+                  )}
                   {item}
                 </button>
               ))}
