@@ -140,24 +140,32 @@ const Contact = () => {
               </Button>
             </form>
 
-            <div className="flex items-center gap-6">
-              {[
-                { icon: Github, label: "GitHub", href: "https://github.com/topics/e-commerce-website" },
-                { icon: Linkedin, label: "LinkedIn", href: "http://linkedin.com/me" },
-                { icon: MessageCircle, label: "WhatsApp", href: whatsappLink },
-              ].map(({ icon: Icon, label, href }) => (
-                <a
-                  key={label}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  <Icon size={16} />
-                  {label}
-                </a>
-              ))}
-            </div>
+            <TooltipProvider delayDuration={200}>
+              <div className="flex items-center gap-6">
+                {[
+                  { icon: Github, label: "GitHub", href: "https://github.com/topics/e-commerce-website", tooltip: "You'll be redirected to John's Github" },
+                  { icon: Linkedin, label: "LinkedIn", href: "http://linkedin.com/me", tooltip: "You'll be redirected to John's LinkedIn" },
+                  { icon: MessageCircle, label: "WhatsApp", href: whatsappLink, tooltip: "You'll be redirected to John's WhatsApp chat" },
+                ].map(({ icon: Icon, label, href, tooltip }) => (
+                  <Tooltip key={label}>
+                    <TooltipTrigger asChild>
+                      <a
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        <Icon size={16} />
+                        {label}
+                      </a>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="text-xs">
+                      {tooltip}
+                    </TooltipContent>
+                  </Tooltip>
+                ))}
+              </div>
+            </TooltipProvider>
           </div>
         </motion.div>
       </div>

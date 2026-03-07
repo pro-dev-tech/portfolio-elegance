@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Trophy, ImageIcon, X } from "lucide-react";
 
@@ -26,13 +26,64 @@ const achievementsData = [
   },
 ];
 
+const CARD_WIDTH = 540;
+const GAP = 24;
+const ITEM_TOTAL = CARD_WIDTH + GAP;
+const SPEED = 60; // pixels per second
+
 const Achievements = () => {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [isPaused, setIsPaused] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [offset, setOffset] = useState(0);
+  const animRef = useRef<number>(0);
+  const lastTimeRef = useRef<number>(0);
+  const isPausedRef = useRef(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const totalWidth = achievementsData.length * ITEM_TOTAL;
 
-  // Duplicate items for seamless loop
-  const duplicatedItems = [...achievementsData, ...achievementsData];
+  const animate = useCallback((time: number) => {
+    if (lastTimeRef.current === 0) lastTimeRef.current = time;
+    const delta = time - lastTimeRef.current;
+    lastTimeRef.current = time;
+
+    if (!isPausedRef.current) {
+      setOffset(prev => {
+        const next = prev + (SPEED * delta) / 1000;
+        return next >= totalWidth ? next - totalWidth : next;
+      });
+    }
+    animRef.current = requestAnimationFrame(animate);
+  }, [totalWidth]);
+
+  useEffect(() => {
+    animRef.current = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animRef.current);
+  }, [animate]);
+
+  // Determine which card is at the center
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const containerWidth = containerRef.current.offsetWidth;
+    const center = offset + containerWidth / 2;
+    const idx = Math.floor(((center % totalWidth) + totalWidth) % totalWidth / ITEM_TOTAL) % achievementsData.length;
+    setActiveIndex(idx);
+  }, [offset, totalWidth]);
+
+  // Render enough duplicates to fill the viewport seamlessly
+  const renderCards = () => {
+    const items: { achievement: typeof achievementsData[0]; origIndex: number; position: number }[] = [];
+    // Render 3 full sets to ensure seamless wrapping
+    for (let set = -1; set <= 2; set++) {
+      achievementsData.forEach((a, i) => {
+        items.push({
+          achievement: a,
+          origIndex: i,
+          position: set * totalWidth + i * ITEM_TOTAL - offset,
+        });
+      });
+    }
+    return items;
+  };
 
   return (
     <section id="achievements" className="section-padding border-t border-border">
@@ -54,67 +105,75 @@ const Achievements = () => {
             </div>
             <div />
           </div>
+        </motion.div>
 
-          {/* Marquee container */}
-          <div
-            className="overflow-hidden relative"
-            onMouseEnter={() => setIsPaused(true)}
-            onMouseLeave={() => setIsPaused(false)}
-          >
-            <motion.div
-              className="flex gap-6"
-              animate={{ x: ["0%", "-50%"] }}
-              transition={{
-                x: {
-                  repeat: Infinity,
-                  repeatType: "loop",
-                  duration: 25,
-                  ease: "linear",
-                },
+        {/* Marquee container */}
+        <div
+          ref={containerRef}
+          className="overflow-hidden relative h-[170px]"
+          onMouseEnter={() => { isPausedRef.current = true; }}
+          onMouseLeave={() => { isPausedRef.current = false; }}
+        >
+          {renderCards().map(({ achievement, origIndex, position }, i) => (
+            <div
+              key={`${achievement.title}-${i}`}
+              className="absolute top-0 cursor-pointer group"
+              style={{
+                transform: `translateX(${position}px)`,
+                width: `${CARD_WIDTH}px`,
+                willChange: "transform",
               }}
-              style={{ animationPlayState: isPaused ? "paused" : "running" }}
-              ref={scrollRef}
+              onClick={() => setExpandedIndex(origIndex)}
             >
-              {duplicatedItems.map((achievement, i) => (
-                <div
-                  key={`${achievement.title}-${i}`}
-                  onClick={() => setExpandedIndex(i % achievementsData.length)}
-                  className="flex-shrink-0 w-[500px] sm:w-[560px] cursor-pointer group"
-                >
-                  <div className="flex rounded-xl border border-border bg-card overflow-hidden hover:border-accent/50 hover:shadow-lg transition-all duration-300 h-[160px]">
-                    {/* Image left */}
-                    <div className="relative w-[160px] h-full bg-secondary overflow-hidden flex-shrink-0">
-                      <img
-                        src={achievement.image}
-                        alt={achievement.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                      <div className="absolute inset-0 flex items-center justify-center bg-secondary/70 opacity-100 group-hover:opacity-0 transition-opacity duration-300 pointer-events-none">
-                        <ImageIcon size={20} className="text-muted-foreground" />
-                      </div>
-                    </div>
-                    {/* Content right */}
-                    <div className="p-5 flex flex-col justify-center flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Trophy size={14} className="text-accent shrink-0" />
-                        <h3 className="font-display text-sm font-semibold text-foreground truncate">
-                          {achievement.title}
-                        </h3>
-                      </div>
-                      <p className="text-xs text-muted-foreground leading-relaxed mb-2 line-clamp-2">
-                        {achievement.description}
-                      </p>
-                      <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
-                        {achievement.date}
-                      </p>
-                      <p className="text-[10px] text-accent mt-2 font-medium">Click to expand →</p>
-                    </div>
+              <div className="flex rounded-xl border border-border bg-card overflow-hidden hover:border-accent/50 hover:shadow-lg transition-all duration-300 h-[160px]">
+                <div className="relative w-[160px] h-full bg-secondary overflow-hidden flex-shrink-0">
+                  <img
+                    src={achievement.image}
+                    alt={achievement.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center bg-secondary/70 opacity-100 group-hover:opacity-0 transition-opacity duration-300 pointer-events-none">
+                    <ImageIcon size={20} className="text-muted-foreground" />
                   </div>
                 </div>
-              ))}
-            </motion.div>
-          </div>
-        </motion.div>
+                <div className="p-5 flex flex-col justify-center flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Trophy size={14} className="text-accent shrink-0" />
+                    <h3 className="font-display text-sm font-semibold text-foreground truncate">
+                      {achievement.title}
+                    </h3>
+                  </div>
+                  <p className="text-xs text-muted-foreground leading-relaxed mb-2 line-clamp-2">
+                    {achievement.description}
+                  </p>
+                  <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
+                    {achievement.date}
+                  </p>
+                  <p className="text-[10px] text-accent mt-2 font-medium">Click to expand →</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Indicator buttons */}
+        <div className="flex justify-center gap-3 mt-6 flex-wrap">
+          {achievementsData.map((achievement, i) => (
+            <button
+              key={achievement.title}
+              onClick={() => setExpandedIndex(i)}
+              className={`
+                text-xs px-4 py-2 rounded-full border font-medium transition-all duration-500
+                ${activeIndex === i
+                  ? "border-accent bg-accent/15 text-accent shadow-[0_0_12px_hsl(var(--accent)/0.4)]"
+                  : "border-border bg-card text-muted-foreground hover:border-accent/30 hover:text-foreground"
+                }
+              `}
+            >
+              {achievement.title}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Expanded detail modal */}
