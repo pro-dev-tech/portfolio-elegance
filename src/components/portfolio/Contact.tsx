@@ -27,14 +27,14 @@ const Contact = () => {
 
     try {
       await emailjs.send(
-        "YOUR_SERVICE_ID",   // ← Replace with your EmailJS Service ID
-        "YOUR_TEMPLATE_ID",  // ← Replace with your EmailJS Template ID
+        "YOUR_SERVICE_ID",
+        "YOUR_TEMPLATE_ID",
         {
           from_name: form.name,
           reply_to: form.email,
           message: form.message,
         },
-        "YOUR_PUBLIC_KEY"    // ← Replace with your EmailJS Public Key
+        "YOUR_PUBLIC_KEY"
       );
 
       toast({
@@ -56,7 +56,7 @@ const Contact = () => {
     }
   };
 
-  const whatsappNumber = "911234567890"; // ← Replace with your WhatsApp number
+  const whatsappNumber = "911234567890";
   const whatsappMessage = encodeURIComponent(
     "Hello Man! I'm reaching you regarding your portfolio. I'd like to discuss a potential opportunity."
   );
@@ -73,7 +73,10 @@ const Contact = () => {
           className="grid md:grid-cols-[1fr_2fr] gap-12 md:gap-20"
         >
           <div>
-            <p className="text-sm font-medium text-accent tracking-widest uppercase">Contact</p>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-[2px] bg-accent" />
+              <p className="text-sm font-semibold text-accent tracking-widest uppercase">Contact</p>
+            </div>
           </div>
           <div>
             <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-6">
@@ -84,7 +87,6 @@ const Contact = () => {
               Whether you have a question or just want to say hi, feel free to reach out.
             </p>
 
-            {/* Contact Info */}
             <div className="flex flex-wrap gap-6 mb-10">
               <a
                 href="mailto:hello@johndoe.dev"
@@ -102,7 +104,6 @@ const Contact = () => {
               </a>
             </div>
 
-            {/* Message Form */}
             <form onSubmit={handleSubmit} className="space-y-4 mb-10">
               <div className="grid sm:grid-cols-2 gap-4">
                 <Input
@@ -138,18 +139,17 @@ const Contact = () => {
               </Button>
             </form>
 
-            {/* Social Links */}
             <div className="flex items-center gap-6">
               {[
-                { icon: Github, label: "GitHub", href: "#" },
-                { icon: Linkedin, label: "LinkedIn", href: "#" },
+                { icon: Github, label: "GitHub", href: "https://github.com/topics/e-commerce-website" },
+                { icon: Linkedin, label: "LinkedIn", href: "http://linkedin.com/me" },
                 { icon: MessageCircle, label: "WhatsApp", href: whatsappLink },
               ].map(({ icon: Icon, label, href }) => (
                 <a
                   key={label}
                   href={href}
-                  target={label === "WhatsApp" ? "_blank" : undefined}
-                  rel={label === "WhatsApp" ? "noopener noreferrer" : undefined}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <Icon size={16} />

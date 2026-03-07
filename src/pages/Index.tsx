@@ -8,11 +8,13 @@ import Skills from "@/components/portfolio/Skills";
 import Achievements from "@/components/portfolio/Achievements";
 import Contact from "@/components/portfolio/Contact";
 import Footer from "@/components/portfolio/Footer";
+import WelcomeGreeting from "@/components/portfolio/WelcomeGreeting";
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      <WelcomeGreeting />
       <Hero />
       <About />
       <Education />

@@ -13,10 +13,18 @@ const Hero = () => {
           className="grid md:grid-cols-[1fr_auto] gap-12 items-center"
         >
           <div>
-            <p className="text-sm font-medium text-accent tracking-widest uppercase mb-6">
+            <motion.h2
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="font-display text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground mb-2"
+            >
+              John Doe
+            </motion.h2>
+            <p className="text-sm font-medium text-accent tracking-widest uppercase mb-8">
               Engineering Student
             </p>
-            <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold leading-[0.95] tracking-tight mb-8">
+            <h1 className="font-display text-3xl md:text-5xl lg:text-6xl font-bold leading-[0.95] tracking-tight mb-8">
               Building elegant
               <br />
               <span className="text-gradient">digital solutions</span>
@@ -44,16 +52,15 @@ const Hero = () => {
             </div>
           </div>
 
-          {/* Profile Photo Placeholder */}
+          {/* Profile Photo */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.5 }}
             className="hidden md:flex items-center justify-center"
           >
-            <div className="w-[268px] h-[268px] lg:w-[296px] lg:h-[296px] rounded-2xl overflow-hidden relative group shadow-xl ring-1 ring-border/60">
-              {/* Textured professional frame */}
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-accent/20 via-secondary to-accent/10 p-[3px]">
+            <div className="w-[270px] h-[270px] lg:w-[298px] lg:h-[298px] rounded-2xl overflow-hidden relative group shadow-xl ring-1 ring-border/60">
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-accent/30 via-secondary to-accent/15 p-[3px]">
                 <div className="w-full h-full rounded-[13px] overflow-hidden bg-secondary">
                   <img
                     src="/placeholder.svg"

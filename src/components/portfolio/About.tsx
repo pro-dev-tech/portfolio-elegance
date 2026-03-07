@@ -12,7 +12,10 @@ const About = () => {
           className="grid md:grid-cols-[1fr_2fr] gap-12 md:gap-20"
         >
           <div>
-            <p className="text-sm font-medium text-accent tracking-widest uppercase">About</p>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-[2px] bg-accent" />
+              <p className="text-sm font-semibold text-accent tracking-widest uppercase">About</p>
+            </div>
           </div>
           <div className="space-y-6">
             <p className="text-xl md:text-2xl font-display leading-relaxed text-foreground">
