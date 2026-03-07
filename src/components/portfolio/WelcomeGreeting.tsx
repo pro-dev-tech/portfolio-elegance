@@ -44,7 +44,7 @@ const WelcomeGreeting = () => {
 
   // Position: below the theme toggle in header (top-right area)
   return (
-    <div className="fixed top-0 right-0 z-[60] pointer-events-none" style={{ width: "360px" }}>
+    <div className="fixed top-0 right-0 z-[60] pointer-events-none" style={{ width: "420px" }}>
       <AnimatePresence>
         {(phase === "dropping" || phase === "visible" || phase === "rising") && (
           <motion.div
