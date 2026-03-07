@@ -31,7 +31,7 @@ const WelcomeGreeting = () => {
       return () => clearTimeout(timer);
     }
     if (phase === "visible") {
-      const timer = setTimeout(() => setPhase("rising"), 5000);
+      const timer = setTimeout(() => setPhase("rising"), 4000);
       return () => clearTimeout(timer);
     }
     if (phase === "rising") {
