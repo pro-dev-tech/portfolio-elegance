@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Moon, Sun, Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const navItems = ["About", "Education", "Experience", "Projects", "Skills", "Achievements", "Gallery", "Contact"];
+const navItems = ["About", "Education", "Experience", "Projects", "Skills", "Achievements", "Gallery", "Posts", "Contact"];
 
 const Header = () => {
   const [isDark, setIsDark] = useState(false);
