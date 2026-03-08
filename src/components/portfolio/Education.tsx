@@ -1,3 +1,4 @@
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { GraduationCap, School } from "lucide-react";
 
@@ -23,6 +24,25 @@ const educationData = [
 ];
 
 const Education = () => {
+  const [clickCount, setClickCount] = useState(0);
+  const lastClickRef = useRef(Date.now());
+
+  const handleHeadingClick = () => {
+    const now = Date.now();
+    // Reset if more than 2 seconds between clicks
+    if (now - lastClickRef.current > 2000) {
+      setClickCount(1);
+    } else {
+      setClickCount((prev) => prev + 1);
+    }
+    lastClickRef.current = now;
+
+    if (clickCount + 1 >= 5) {
+      setClickCount(0);
+      window.dispatchEvent(new CustomEvent("adminUnlock"));
+    }
+  };
+
   return (
     <section id="education" className="section-padding border-t border-border">
       <div className="max-w-6xl mx-auto">
@@ -36,7 +56,12 @@ const Education = () => {
           <div>
             <div className="flex items-center gap-3">
               <div className="w-8 h-[2px] bg-accent" />
-              <p className="text-sm font-semibold text-accent tracking-widest uppercase">Education</p>
+              <button
+                onClick={handleHeadingClick}
+                className="text-sm font-semibold text-accent tracking-widest uppercase select-none cursor-default"
+              >
+                Education
+              </button>
             </div>
           </div>
           <div className="space-y-10">
@@ -54,18 +79,12 @@ const Education = () => {
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 mb-2">
                   <div>
-                    <h3 className="font-display text-lg font-semibold text-foreground">
-                      {edu.institution}
-                    </h3>
+                    <h3 className="font-display text-lg font-semibold text-foreground">{edu.institution}</h3>
                     <p className="text-sm text-accent font-medium">{edu.degree}</p>
                   </div>
-                  <span className="text-xs text-muted-foreground font-medium shrink-0 mt-1 sm:mt-0">
-                    {edu.duration}
-                  </span>
+                  <span className="text-xs text-muted-foreground font-medium shrink-0 mt-1 sm:mt-0">{edu.duration}</span>
                 </div>
-                <p className="text-sm text-muted-foreground leading-relaxed mb-2">
-                  {edu.description}
-                </p>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-2">{edu.description}</p>
                 <p className="text-xs font-medium text-foreground">
                   GPA / Score: <span className="text-accent">{edu.gpa}</span>
                 </p>

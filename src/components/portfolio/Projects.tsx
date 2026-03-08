@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowUpRight, X, ExternalLink, ImageIcon } from "lucide-react";
+import { ArrowUpRight, X, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
 
@@ -17,16 +17,16 @@ const projects = [
   {
     title: "Developer CLI Toolkit",
     description: "A composable CLI framework for building internal developer tools with plugin architecture and interactive prompts.",
-    details: "Designed and developed a composable CLI framework that enables teams to build internal developer tools rapidly. Features a plugin architecture for extensibility, interactive terminal prompts, auto-generated help documentation, and WebAssembly support for cross-platform distribution. Used by multiple teams to standardize development workflows.",
+    details: "Designed and developed a composable CLI framework that enables teams to build internal developer tools rapidly. Features a plugin architecture for extensibility, interactive terminal prompts, auto-generated help documentation, and WebAssembly support for cross-platform distribution.",
     tags: ["Rust", "WASM", "TypeScript"],
     year: "2024",
     image: "/images/intern2.jpg",
-    link: "https://167.vercel.app",
+    link: "https://567.vercel.app",
   },
   {
     title: "Real-time Analytics Engine",
     description: "Stream processing pipeline for event analytics with sub-second query latency over billions of events.",
-    details: "Architected a real-time analytics engine processing billions of events with sub-second query latency. The pipeline ingests events via Apache Kafka, processes them through a Python-based stream processor, and stores results in ClickHouse for fast analytical queries. Includes a dashboard for real-time visualization and alerting.",
+    details: "Architected a real-time analytics engine processing billions of events with sub-second query latency. The pipeline ingests events via Apache Kafka, processes them through a Python-based stream processor, and stores results in ClickHouse for fast analytical queries.",
     tags: ["Python", "Apache Kafka", "ClickHouse"],
     year: "2024",
     image: "/images/intern3.jpg",
@@ -35,7 +35,7 @@ const projects = [
   {
     title: "Infrastructure as Code Platform",
     description: "Declarative infrastructure management tool with drift detection, plan visualization, and multi-cloud support.",
-    details: "Created a declarative infrastructure management platform supporting AWS, GCP, and Azure. Features include automatic drift detection, visual plan previews before applying changes, rollback capabilities, and a React-based dashboard for monitoring infrastructure state across multiple cloud providers.",
+    details: "Created a declarative infrastructure management platform supporting AWS, GCP, and Azure. Features include automatic drift detection, visual plan previews before applying changes, rollback capabilities, and a React-based dashboard.",
     tags: ["TypeScript", "AWS", "Terraform", "React"],
     year: "2023",
     image: "/images/intern4.jpg",
@@ -79,22 +79,12 @@ const Projects = () => {
                     <h3 className="font-display text-xl md:text-2xl font-semibold text-foreground group-hover:text-accent transition-colors">
                       {project.title}
                     </h3>
-                    <ArrowUpRight
-                      size={18}
-                      className="text-muted-foreground group-hover:text-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all"
-                    />
+                    <ArrowUpRight size={18} className="text-muted-foreground group-hover:text-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
                   </div>
-                  <p className="text-muted-foreground max-w-xl leading-relaxed text-sm md:text-base">
-                    {project.description}
-                  </p>
+                  <p className="text-muted-foreground max-w-xl leading-relaxed text-sm md:text-base">{project.description}</p>
                   <div className="flex flex-wrap gap-2 mt-4">
                     {project.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="text-xs px-3 py-1 rounded-full bg-secondary text-secondary-foreground font-medium"
-                      >
-                        {tag}
-                      </span>
+                      <span key={tag} className="text-xs px-3 py-1 rounded-full bg-secondary text-secondary-foreground font-medium">{tag}</span>
                     ))}
                   </div>
                 </div>
@@ -105,7 +95,7 @@ const Projects = () => {
         </div>
       </div>
 
-      {/* Project Detail Modal - sized like Experience modal */}
+      {/* Project Detail Modal */}
       <AnimatePresence>
         {expandedIndex !== null && (
           <motion.div
@@ -120,50 +110,37 @@ const Projects = () => {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
-              className="bg-card border border-border rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden max-h-[85vh] overflow-y-auto"
+              className="bg-card border-2 border-accent/30 shadow-[0_0_30px_hsl(var(--accent)/0.12)] rounded-2xl max-w-2xl w-full overflow-hidden max-h-[85vh] overflow-y-auto custom-scrollbar"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="p-8">
                 <div className="flex items-start justify-between mb-6">
                   <div>
-                    <p className="text-[11px] text-accent font-semibold uppercase tracking-wider mb-2">
-                      {projects[expandedIndex].year}
-                    </p>
-                    <h3 className="font-display text-2xl font-bold text-foreground">
-                      {projects[expandedIndex].title}
-                    </h3>
+                    <p className="text-[11px] text-accent font-semibold uppercase tracking-wider mb-2">{projects[expandedIndex].year}</p>
+                    <h3 className="font-display text-2xl font-bold text-foreground">{projects[expandedIndex].title}</h3>
                   </div>
-                  <button
-                    onClick={() => setExpandedIndex(null)}
-                    className="p-2 rounded-full hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
-                  >
+                  <button onClick={() => setExpandedIndex(null)} className="p-2 rounded-full hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors">
                     <X size={16} />
                   </button>
                 </div>
 
-                <div className="relative aspect-[16/9] bg-secondary overflow-hidden rounded-xl mb-6 max-h-[200px]">
+                {/* Centered image */}
+                <div className="bg-secondary overflow-hidden rounded-xl mb-6 max-h-[200px] flex items-center justify-center">
                   <img
                     src={projects[expandedIndex].image}
                     alt={projects[expandedIndex].title}
-                    className="w-full h-full object-cover"
+                    loading="lazy"
+                    className="max-w-full max-h-[200px] object-contain mx-auto"
                   />
                 </div>
 
                 <div className="flex flex-wrap gap-2 mb-4">
                   {projects[expandedIndex].tags.map((tag) => (
-                    <span key={tag} className="text-xs px-3 py-1 rounded-full bg-secondary text-secondary-foreground font-medium">
-                      {tag}
-                    </span>
+                    <span key={tag} className="text-xs px-3 py-1 rounded-full bg-secondary text-secondary-foreground font-medium">{tag}</span>
                   ))}
                 </div>
-                <p className="text-muted-foreground leading-relaxed mb-6">
-                  {projects[expandedIndex].details}
-                </p>
-                <a
-                  href={projects[expandedIndex].link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <p className="text-muted-foreground leading-relaxed mb-6">{projects[expandedIndex].details}</p>
+                <a href={projects[expandedIndex].link} target="_blank" rel="noopener noreferrer">
                   <Button variant="hero" size="lg">
                     <ExternalLink size={16} />
                     View Work

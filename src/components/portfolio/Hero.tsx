@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowDown, User } from "lucide-react";
+import { ArrowDown } from "lucide-react";
 
 const Hero = () => {
   return (
@@ -35,24 +35,15 @@ const Hero = () => {
               impactful software.
             </p>
             <div className="flex flex-wrap gap-4">
-              <Button
-                variant="hero"
-                size="lg"
-                onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}
-              >
+              <Button variant="hero" size="lg" onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}>
                 View Projects
               </Button>
-              <Button
-                variant="hero-outline"
-                size="lg"
-                onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
-              >
+              <Button variant="hero-outline" size="lg" onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}>
                 Get in Touch
               </Button>
             </div>
           </div>
 
-          {/* Profile Photo */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -65,6 +56,7 @@ const Hero = () => {
                   <img
                     src="/images/profile.png"
                     alt="Profile photo"
+                    loading="eager"
                     className="w-full h-full object-cover"
                   />
                 </div>

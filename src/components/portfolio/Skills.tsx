@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ImageIcon, FileText, Download } from "lucide-react";
+import { X, FileText, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
 
@@ -124,7 +124,7 @@ const Skills = () => {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
-              className="bg-card border border-border rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden"
+              className="bg-card border-2 border-accent/30 shadow-[0_0_30px_hsl(var(--accent)/0.12)] rounded-2xl max-w-2xl w-full overflow-hidden max-h-[85vh] overflow-y-auto custom-scrollbar"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="p-8">
@@ -149,10 +149,9 @@ const Skills = () => {
                   <img
                     src={expandedSkill.skill.certificate}
                     alt={`${expandedSkill.skill.name} certificate`}
-                    className="w-full h-full object-contain max-h-[200px]"
+                    loading="lazy"
+                    className="max-w-full max-h-[200px] object-contain mx-auto"
                   />
-                  <div className="absolute inset-0 flex items-center justify-center bg-secondary/60">
-                  </div>
                 </div>
 
                 <h4 className="font-display text-sm font-semibold text-foreground mb-2 uppercase tracking-wide">
@@ -167,7 +166,7 @@ const Skills = () => {
         )}
       </AnimatePresence>
 
-      {/* Resume Modal */}
+      {/* Resume Modal - shows actual PDF */}
       <AnimatePresence>
         {showResume && (
           <motion.div
@@ -182,10 +181,10 @@ const Skills = () => {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
-              className="bg-card border border-border rounded-2xl shadow-2xl max-w-3xl w-full max-h-[85vh] overflow-hidden flex flex-col"
+              className="bg-card border-2 border-accent/30 shadow-[0_0_30px_hsl(var(--accent)/0.12)] rounded-2xl max-w-3xl w-full max-h-[88vh] overflow-hidden flex flex-col"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex items-center justify-between p-6 border-b border-border">
+              <div className="flex items-center justify-between p-5 border-b border-border">
                 <h3 className="font-display text-xl font-bold text-foreground">My Resume</h3>
                 <button
                   onClick={() => setShowResume(false)}
@@ -194,19 +193,16 @@ const Skills = () => {
                   <X size={16} />
                 </button>
               </div>
-              <div className="flex-1 overflow-auto p-6">
-                <div className="bg-secondary rounded-xl aspect-[8.5/11] flex items-center justify-center">
-                  <div className="text-center">
-                    <FileText size={48} className="mx-auto text-muted-foreground mb-3" /> 
-                  </div>
-                </div>
+              <div className="flex-1 overflow-hidden p-4">
+                <iframe
+                  src="/resume.pdf"
+                  title="Resume"
+                  className="w-full h-full rounded-lg border border-border"
+                  style={{ minHeight: "60vh" }}
+                />
               </div>
-              <div className="p-6 border-t border-border">
-                <a
-                  href="/resume.pdf"
-                  download="John_Doe_Resume.pdf"
-                  className="w-full"
-                >
+              <div className="p-4 border-t border-border">
+                <a href="/resume.pdf" download="John_Doe_Resume.pdf" className="w-full block">
                   <Button variant="hero" size="lg" className="w-full">
                     <Download size={16} />
                     Download Resume

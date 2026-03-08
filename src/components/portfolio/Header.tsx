@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Moon, Sun, Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const navItems = ["About", "Education", "Experience", "Projects", "Skills", "Achievements", "Contact"];
+const navItems = ["About", "Education", "Experience", "Projects", "Skills", "Achievements", "Gallery", "Contact"];
 
 const Header = () => {
   const [isDark, setIsDark] = useState(false);
@@ -13,22 +13,17 @@ const Header = () => {
   useEffect(() => {
     const onScroll = () => {
       setIsScrolled(window.scrollY > 20);
-
-      // Determine active section
       const sections = navItems.map((item) => item.toLowerCase());
       let current = "";
       for (const id of sections) {
         const el = document.getElementById(id);
         if (el) {
           const rect = el.getBoundingClientRect();
-          if (rect.top <= 120) {
-            current = id;
-          }
+          if (rect.top <= 120) current = id;
         }
       }
       setActiveSection(current);
     };
-
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -62,7 +57,6 @@ const Header = () => {
               key={item}
               onClick={() => scrollTo(item)}
               className="relative text-sm font-medium transition-colors py-1"
-              style={{ color: activeSection === item.toLowerCase() ? undefined : undefined }}
             >
               <span className={activeSection === item.toLowerCase() ? "text-foreground" : "text-muted-foreground hover:text-foreground"}>
                 {item}

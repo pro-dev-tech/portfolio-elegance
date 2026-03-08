@@ -1,22 +1,22 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Trophy, ImageIcon, X } from "lucide-react";
+import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
+import { Trophy, X } from "lucide-react";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
 
 const achievementsData = [
-  {
-    title: "Hackathon Winner",
-    description: "Won first place at XYZ National Hackathon 2025 among 500+ teams.",
-    details: "Led a team of 4 to build an AI-powered accessibility tool in 36 hours. The solution utilized computer vision and NLP to assist visually impaired users. Competed against 500+ teams from across the country.",
-    image: "/images/ach1.jpg",
-    date: "March 2025",
-  },
   {
     title: "Research Paper Published",
     description: "Published a paper on ML-based optimization in IEEE conference proceedings.",
     details: "Co-authored a research paper titled 'Optimizing Neural Network Inference Using Adaptive Pruning Strategies' published in IEEE International Conference. The paper proposed a novel pruning algorithm that reduced model size by 40% with minimal accuracy loss.",
     image: "/images/ach2.jpg",
     date: "January 2025",
+  },
+  {
+    title: "Hackathon Winner",
+    description: "Won first place at XYZ National Hackathon 2025 among 500+ teams.",
+    details: "Led a team of 4 to build an AI-powered accessibility tool in 36 hours. The solution utilized computer vision and NLP to assist visually impaired users. Competed against 500+ teams from across the country.",
+    image: "/images/ach1.jpg",
+    date: "March 2025",
   },
   {
     title: "Open Source Contributor",
@@ -30,7 +30,17 @@ const achievementsData = [
 const CARD_WIDTH = 540;
 const GAP = 24;
 const ITEM_TOTAL = CARD_WIDTH + GAP;
-const SPEED = 60;
+const SPEED = 70;
+
+// Compute button order so activeIndex is always in the center
+const getButtonOrder = (activeIdx: number, total: number): number[] => {
+  const center = Math.floor(total / 2);
+  const order: number[] = [];
+  for (let i = 0; i < total; i++) {
+    order.push(((activeIdx - center + i) % total + total) % total);
+  }
+  return order;
+};
 
 const Achievements = () => {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
@@ -50,7 +60,7 @@ const Achievements = () => {
     lastTimeRef.current = time;
 
     if (!isPausedRef.current) {
-      setOffset(prev => {
+      setOffset((prev) => {
         const next = prev + (SPEED * delta) / 1000;
         return next >= totalWidth ? next - totalWidth : next;
       });
@@ -67,12 +77,15 @@ const Achievements = () => {
     if (!containerRef.current) return;
     const containerWidth = containerRef.current.offsetWidth;
     const center = offset + containerWidth / 2;
-    const idx = Math.floor(((center % totalWidth) + totalWidth) % totalWidth / ITEM_TOTAL) % achievementsData.length;
+    const idx =
+      Math.floor(
+        (((center % totalWidth) + totalWidth) % totalWidth) / ITEM_TOTAL
+      ) % achievementsData.length;
     setActiveIndex(idx);
   }, [offset, totalWidth]);
 
   const renderCards = () => {
-    const items: { achievement: typeof achievementsData[0]; origIndex: number; position: number }[] = [];
+    const items: { achievement: (typeof achievementsData)[0]; origIndex: number; position: number }[] = [];
     for (let set = -1; set <= 2; set++) {
       achievementsData.forEach((a, i) => {
         items.push({
@@ -85,20 +98,7 @@ const Achievements = () => {
     return items;
   };
 
-  // Calculate the button container offset so that the active button is centered
-  const buttonContainerRef = useRef<HTMLDivElement>(null);
-  const [buttonOffset, setButtonOffset] = useState(0);
-
-  useEffect(() => {
-    if (!buttonContainerRef.current) return;
-    const buttons = buttonContainerRef.current.children;
-    if (buttons.length === 0) return;
-    const btn = buttons[activeIndex] as HTMLElement;
-    const containerWidth = buttonContainerRef.current.parentElement?.offsetWidth || 0;
-    const btnCenter = btn.offsetLeft + btn.offsetWidth / 2;
-    const targetOffset = containerWidth / 2 - btnCenter;
-    setButtonOffset(targetOffset);
-  }, [activeIndex]);
+  const buttonOrder = getButtonOrder(activeIndex, achievementsData.length);
 
   return (
     <section id="achievements" className="section-padding border-t border-border">
@@ -122,7 +122,7 @@ const Achievements = () => {
           </div>
         </motion.div>
 
-        {/* Marquee container */}
+        {/* Marquee */}
         <div
           ref={containerRef}
           className="overflow-hidden relative h-[170px]"
@@ -145,6 +145,7 @@ const Achievements = () => {
                   <img
                     src={achievement.image}
                     alt={achievement.title}
+                    loading="lazy"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>
@@ -168,30 +169,29 @@ const Achievements = () => {
           ))}
         </div>
 
-        {/* Indicator buttons - step-by-step movement */}
-        <div className="mt-6 overflow-hidden">
-          <motion.div
-            ref={buttonContainerRef}
-            className="flex gap-3 w-max"
-            animate={{ x: buttonOffset }}
-            transition={{ type: "spring", stiffness: 200, damping: 25 }}
-          >
-            {achievementsData.map((achievement, i) => (
-              <button
-                key={achievement.title}
-                onClick={() => setExpandedIndex(i)}
-                className={`
-                  text-xs px-4 py-2 rounded-full border font-medium transition-all duration-500 whitespace-nowrap
-                  ${activeIndex === i
-                    ? "border-accent bg-accent/15 text-accent shadow-[0_0_12px_hsl(var(--accent)/0.4)]"
-                    : "border-border bg-card text-muted-foreground hover:border-accent/30 hover:text-foreground"
-                  }
-                `}
-              >
-                {achievement.title}
-              </button>
-            ))}
-          </motion.div>
+        {/* Rotating indicator buttons */}
+        <div className="mt-6 flex justify-center">
+          <LayoutGroup>
+            <div className="flex gap-3">
+              {buttonOrder.map((idx) => (
+                <motion.button
+                  key={achievementsData[idx].title}
+                  layout
+                  transition={{ type: "spring", stiffness: 250, damping: 28 }}
+                  onClick={() => setExpandedIndex(idx)}
+                  className={`
+                    text-xs px-4 py-2 rounded-full border font-medium transition-colors duration-300 whitespace-nowrap
+                    ${activeIndex === idx
+                      ? "border-accent bg-accent/15 text-accent shadow-[0_0_14px_hsl(var(--accent)/0.4)]"
+                      : "border-border bg-card text-muted-foreground hover:border-accent/30 hover:text-foreground"
+                    }
+                  `}
+                >
+                  {achievementsData[idx].title}
+                </motion.button>
+              ))}
+            </div>
+          </LayoutGroup>
         </div>
       </div>
 
@@ -210,7 +210,7 @@ const Achievements = () => {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
-              className="bg-card border border-border rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden"
+              className="bg-card border-2 border-accent/30 shadow-[0_0_30px_hsl(var(--accent)/0.12)] rounded-2xl max-w-2xl w-full overflow-hidden max-h-[85vh] overflow-y-auto custom-scrollbar"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="p-8">
@@ -233,7 +233,8 @@ const Achievements = () => {
                   <img
                     src={achievementsData[expandedIndex].image}
                     alt={achievementsData[expandedIndex].title}
-                    className="w-full h-full object-contain max-h-[200px]"
+                    loading="lazy"
+                    className="max-w-full max-h-[200px] object-contain mx-auto"
                   />
                 </div>
 
