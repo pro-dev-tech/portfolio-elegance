@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Briefcase, X } from "lucide-react";
+import { Briefcase, X, ArrowRight, ImageIcon, Award } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useScrollLock } from "@/hooks/use-scroll-lock";
 
 const experienceData = [
   {
@@ -11,6 +13,7 @@ const experienceData = [
       "Developed REST APIs, optimized database queries, and contributed to CI/CD pipelines. Collaborated with cross-functional teams on product features.",
     technologies: ["React", "Node.js", "PostgreSQL"],
     detailedJourney: "During my internship, I was part of the platform engineering team where I designed and implemented 5 new REST API endpoints serving 10K+ daily requests. I optimized critical database queries reducing response times by 60%. I also set up automated CI/CD pipelines using GitHub Actions that reduced deployment time from 30 minutes to 5 minutes. Collaborated with product managers, designers, and senior engineers in an agile environment with daily standups and bi-weekly sprints.",
+    certificate: "/placeholder.svg",
   },
   {
     role: "Web Development Intern",
@@ -20,11 +23,14 @@ const experienceData = [
       "Built responsive front-end interfaces and integrated third-party APIs. Improved page load performance by 30%.",
     technologies: ["TypeScript", "Tailwind CSS", "REST APIs"],
     detailedJourney: "Worked on the customer-facing web application, rebuilding key pages with modern React patterns and TypeScript. Implemented lazy loading, code splitting, and image optimization that improved Lighthouse performance scores from 65 to 95. Integrated payment gateway and analytics APIs. Mentored by senior developers and participated in code reviews that significantly improved my coding practices.",
+    certificate: "/placeholder.svg",
   },
 ];
 
 const Experience = () => {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  const [certificateIndex, setCertificateIndex] = useState<number | null>(null);
+  useScrollLock(expandedIndex !== null || certificateIndex !== null);
 
   return (
     <section id="experience" className="section-padding border-t border-border">
@@ -61,12 +67,13 @@ const Experience = () => {
                   <div>
                     <button
                       onClick={() => setExpandedIndex(i)}
-                      className="font-display text-lg font-semibold text-foreground hover:text-accent transition-colors cursor-pointer text-left group"
+                      className="font-display text-lg font-semibold text-foreground hover:text-accent transition-colors cursor-pointer text-left group flex items-center gap-2"
                     >
                       <span className="relative">
                         {exp.role}
                         <span className="absolute -bottom-0.5 left-0 w-0 h-[1px] bg-accent group-hover:w-full transition-all duration-300" />
                       </span>
+                      <ArrowRight size={14} className="text-muted-foreground group-hover:text-accent group-hover:translate-x-0.5 transition-all shrink-0" />
                     </button>
                     <p className="text-sm text-accent font-medium">{exp.company}</p>
                   </div>
@@ -142,7 +149,7 @@ const Experience = () => {
                   {experienceData[expandedIndex].detailedJourney}
                 </p>
 
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 mb-6">
                   {experienceData[expandedIndex].technologies.map((tech) => (
                     <span
                       key={tech}
@@ -151,6 +158,68 @@ const Experience = () => {
                       {tech}
                     </span>
                   ))}
+                </div>
+
+                <Button
+                  variant="hero-outline"
+                  size="lg"
+                  onClick={() => {
+                    const idx = expandedIndex;
+                    setExpandedIndex(null);
+                    setTimeout(() => setCertificateIndex(idx), 200);
+                  }}
+                >
+                  <Award size={16} />
+                  View Certificate
+                </Button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Certificate Modal */}
+      <AnimatePresence>
+        {certificateIndex !== null && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-6"
+            onClick={() => setCertificateIndex(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              className="bg-card border border-border rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between p-6 border-b border-border">
+                <h3 className="font-display text-lg font-bold text-foreground">
+                  Certificate — {experienceData[certificateIndex].role}
+                </h3>
+                <button
+                  onClick={() => setCertificateIndex(null)}
+                  className="p-2 rounded-full hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+              <div className="p-6">
+                <div className="relative bg-secondary rounded-xl overflow-hidden max-h-[400px] flex items-center justify-center">
+                  <img
+                    src={experienceData[certificateIndex].certificate}
+                    alt={`${experienceData[certificateIndex].role} certificate`}
+                    className="w-full h-full object-contain max-h-[400px]"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center bg-secondary/60">
+                    <div className="text-center">
+                      <ImageIcon size={24} className="mx-auto text-muted-foreground mb-1" />
+                      <p className="text-xs text-muted-foreground">Certificate Image</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </motion.div>

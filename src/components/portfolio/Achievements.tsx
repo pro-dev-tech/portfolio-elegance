@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Trophy, ImageIcon, X } from "lucide-react";
+import { useScrollLock } from "@/hooks/use-scroll-lock";
 
 const achievementsData = [
   {
@@ -29,7 +30,7 @@ const achievementsData = [
 const CARD_WIDTH = 540;
 const GAP = 24;
 const ITEM_TOTAL = CARD_WIDTH + GAP;
-const SPEED = 60; // pixels per second
+const SPEED = 60;
 
 const Achievements = () => {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
@@ -40,6 +41,8 @@ const Achievements = () => {
   const isPausedRef = useRef(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const totalWidth = achievementsData.length * ITEM_TOTAL;
+
+  useScrollLock(expandedIndex !== null);
 
   const animate = useCallback((time: number) => {
     if (lastTimeRef.current === 0) lastTimeRef.current = time;
@@ -60,7 +63,6 @@ const Achievements = () => {
     return () => cancelAnimationFrame(animRef.current);
   }, [animate]);
 
-  // Determine which card is at the center
   useEffect(() => {
     if (!containerRef.current) return;
     const containerWidth = containerRef.current.offsetWidth;
@@ -69,10 +71,8 @@ const Achievements = () => {
     setActiveIndex(idx);
   }, [offset, totalWidth]);
 
-  // Render enough duplicates to fill the viewport seamlessly
   const renderCards = () => {
     const items: { achievement: typeof achievementsData[0]; origIndex: number; position: number }[] = [];
-    // Render 3 full sets to ensure seamless wrapping
     for (let set = -1; set <= 2; set++) {
       achievementsData.forEach((a, i) => {
         items.push({
@@ -84,6 +84,21 @@ const Achievements = () => {
     }
     return items;
   };
+
+  // Calculate the button container offset so that the active button is centered
+  const buttonContainerRef = useRef<HTMLDivElement>(null);
+  const [buttonOffset, setButtonOffset] = useState(0);
+
+  useEffect(() => {
+    if (!buttonContainerRef.current) return;
+    const buttons = buttonContainerRef.current.children;
+    if (buttons.length === 0) return;
+    const btn = buttons[activeIndex] as HTMLElement;
+    const containerWidth = buttonContainerRef.current.parentElement?.offsetWidth || 0;
+    const btnCenter = btn.offsetLeft + btn.offsetWidth / 2;
+    const targetOffset = containerWidth / 2 - btnCenter;
+    setButtonOffset(targetOffset);
+  }, [activeIndex]);
 
   return (
     <section id="achievements" className="section-padding border-t border-border">
@@ -126,7 +141,7 @@ const Achievements = () => {
               onClick={() => setExpandedIndex(origIndex)}
             >
               <div className="flex rounded-xl border border-border bg-card overflow-hidden hover:border-accent/50 hover:shadow-lg transition-all duration-300 h-[160px]">
-                <div className="relative w-[160px] h-full bg-secondary overflow-hidden flex-shrink-0">
+                <div className="relative w-[140px] h-full bg-secondary overflow-hidden flex-shrink-0">
                   <img
                     src={achievement.image}
                     alt={achievement.title}
@@ -156,23 +171,30 @@ const Achievements = () => {
           ))}
         </div>
 
-        {/* Indicator buttons */}
-        <div className="flex justify-center gap-3 mt-6 flex-wrap">
-          {achievementsData.map((achievement, i) => (
-            <button
-              key={achievement.title}
-              onClick={() => setExpandedIndex(i)}
-              className={`
-                text-xs px-4 py-2 rounded-full border font-medium transition-all duration-500
-                ${activeIndex === i
-                  ? "border-accent bg-accent/15 text-accent shadow-[0_0_12px_hsl(var(--accent)/0.4)]"
-                  : "border-border bg-card text-muted-foreground hover:border-accent/30 hover:text-foreground"
-                }
-              `}
-            >
-              {achievement.title}
-            </button>
-          ))}
+        {/* Indicator buttons - step-by-step movement */}
+        <div className="mt-6 overflow-hidden">
+          <motion.div
+            ref={buttonContainerRef}
+            className="flex gap-3 w-max"
+            animate={{ x: buttonOffset }}
+            transition={{ type: "spring", stiffness: 200, damping: 25 }}
+          >
+            {achievementsData.map((achievement, i) => (
+              <button
+                key={achievement.title}
+                onClick={() => setExpandedIndex(i)}
+                className={`
+                  text-xs px-4 py-2 rounded-full border font-medium transition-all duration-500 whitespace-nowrap
+                  ${activeIndex === i
+                    ? "border-accent bg-accent/15 text-accent shadow-[0_0_12px_hsl(var(--accent)/0.4)]"
+                    : "border-border bg-card text-muted-foreground hover:border-accent/30 hover:text-foreground"
+                  }
+                `}
+              >
+                {achievement.title}
+              </button>
+            ))}
+          </motion.div>
         </div>
       </div>
 
@@ -194,26 +216,36 @@ const Achievements = () => {
               className="bg-card border border-border rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="relative aspect-[16/9] bg-secondary overflow-hidden">
-                <img
-                  src={achievementsData[expandedIndex].image}
-                  alt={achievementsData[expandedIndex].title}
-                  className="w-full h-full object-cover"
-                />
-                <button
-                  onClick={() => setExpandedIndex(null)}
-                  className="absolute top-4 right-4 p-2 rounded-full bg-background/80 backdrop-blur-sm text-foreground hover:bg-background transition-colors"
-                >
-                  <X size={16} />
-                </button>
-              </div>
               <div className="p-8">
-                <div className="flex items-center gap-2 mb-1">
-                  <Trophy size={16} className="text-accent" />
-                  <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">
-                    {achievementsData[expandedIndex].date}
-                  </p>
+                <div className="flex items-start justify-between mb-6">
+                  <div className="flex items-center gap-2">
+                    <Trophy size={16} className="text-accent" />
+                    <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">
+                      {achievementsData[expandedIndex].date}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setExpandedIndex(null)}
+                    className="p-2 rounded-full hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <X size={16} />
+                  </button>
                 </div>
+
+                <div className="relative bg-secondary overflow-hidden rounded-xl mb-6 max-h-[200px] flex items-center justify-center">
+                  <img
+                    src={achievementsData[expandedIndex].image}
+                    alt={achievementsData[expandedIndex].title}
+                    className="w-full h-full object-contain max-h-[200px]"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center bg-secondary/60">
+                    <div className="text-center">
+                      <ImageIcon size={24} className="mx-auto text-muted-foreground mb-1" />
+                      <p className="text-xs text-muted-foreground">Achievement Image</p>
+                    </div>
+                  </div>
+                </div>
+
                 <h3 className="font-display text-2xl font-bold text-foreground mb-4">
                   {achievementsData[expandedIndex].title}
                 </h3>

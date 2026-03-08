@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight, X, ExternalLink, ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useScrollLock } from "@/hooks/use-scroll-lock";
 
 const projects = [
   {
@@ -44,6 +45,7 @@ const projects = [
 
 const Projects = () => {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  useScrollLock(expandedIndex !== null);
 
   return (
     <section id="projects" className="section-padding border-t border-border">
@@ -54,7 +56,10 @@ const Projects = () => {
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
         >
-          <p className="text-sm font-medium text-accent tracking-widest uppercase mb-16">Selected Work</p>
+          <div className="flex items-center gap-3 mb-16">
+            <div className="w-8 h-[2px] bg-accent" />
+            <p className="text-sm font-semibold text-accent tracking-widest uppercase">Selected Work</p>
+          </div>
         </motion.div>
 
         <div className="space-y-0">
@@ -100,7 +105,7 @@ const Projects = () => {
         </div>
       </div>
 
-      {/* Project Detail Modal */}
+      {/* Project Detail Modal - sized like Experience modal */}
       <AnimatePresence>
         {expandedIndex !== null && (
           <motion.div
@@ -115,37 +120,41 @@ const Projects = () => {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
-              className="bg-card border border-border rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden"
+              className="bg-card border border-border rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden max-h-[85vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="relative aspect-[16/9] bg-secondary overflow-hidden">
-                <img
-                  src={projects[expandedIndex].image}
-                  alt={projects[expandedIndex].title}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 flex items-center justify-center bg-secondary/60">
-                  <div className="text-center">
-                    <ImageIcon size={32} className="mx-auto text-muted-foreground mb-1" />
-                    <p className="text-xs text-muted-foreground">Project Screenshot</p>
+              <div className="p-8">
+                <div className="flex items-start justify-between mb-6">
+                  <div>
+                    <p className="text-[11px] text-accent font-semibold uppercase tracking-wider mb-2">
+                      {projects[expandedIndex].year}
+                    </p>
+                    <h3 className="font-display text-2xl font-bold text-foreground">
+                      {projects[expandedIndex].title}
+                    </h3>
+                  </div>
+                  <button
+                    onClick={() => setExpandedIndex(null)}
+                    className="p-2 rounded-full hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+
+                <div className="relative aspect-[16/9] bg-secondary overflow-hidden rounded-xl mb-6 max-h-[200px]">
+                  <img
+                    src={projects[expandedIndex].image}
+                    alt={projects[expandedIndex].title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center bg-secondary/60">
+                    <div className="text-center">
+                      <ImageIcon size={24} className="mx-auto text-muted-foreground mb-1" />
+                      <p className="text-xs text-muted-foreground">Project Screenshot</p>
+                    </div>
                   </div>
                 </div>
-                <button
-                  onClick={() => setExpandedIndex(null)}
-                  className="absolute top-4 right-4 p-2 rounded-full bg-background/80 backdrop-blur-sm text-foreground hover:bg-background transition-colors"
-                >
-                  <X size={16} />
-                </button>
-              </div>
-              <div className="p-8">
-                <div className="flex items-center gap-2 mb-1">
-                  <p className="text-[11px] text-accent font-semibold uppercase tracking-wider">
-                    {projects[expandedIndex].year}
-                  </p>
-                </div>
-                <h3 className="font-display text-2xl font-bold text-foreground mb-3">
-                  {projects[expandedIndex].title}
-                </h3>
+
                 <div className="flex flex-wrap gap-2 mb-4">
                   {projects[expandedIndex].tags.map((tag) => (
                     <span key={tag} className="text-xs px-3 py-1 rounded-full bg-secondary text-secondary-foreground font-medium">

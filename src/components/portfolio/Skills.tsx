@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ImageIcon, FileText, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useScrollLock } from "@/hooks/use-scroll-lock";
 
 const skillGroups = [
   {
@@ -49,6 +50,7 @@ const skillGroups = [
 const Skills = () => {
   const [expandedSkill, setExpandedSkill] = useState<{ category: string; skill: typeof skillGroups[0]["skills"][0] } | null>(null);
   const [showResume, setShowResume] = useState(false);
+  useScrollLock(expandedSkill !== null || showResume);
 
   return (
     <section id="skills" className="section-padding border-t border-border">
@@ -125,32 +127,38 @@ const Skills = () => {
               className="bg-card border border-border rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="relative aspect-[16/9] bg-secondary overflow-hidden">
-                <img
-                  src={expandedSkill.skill.certificate}
-                  alt={`${expandedSkill.skill.name} certificate`}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 flex items-center justify-center bg-secondary/60">
-                  <div className="text-center">
-                    <ImageIcon size={32} className="mx-auto text-muted-foreground mb-1" />
-                    <p className="text-xs text-muted-foreground">Certificate Image</p>
+              <div className="p-8">
+                <div className="flex items-start justify-between mb-6">
+                  <div>
+                    <p className="text-[11px] text-accent font-semibold uppercase tracking-wider mb-1">
+                      {expandedSkill.category}
+                    </p>
+                    <h3 className="font-display text-2xl font-bold text-foreground">
+                      {expandedSkill.skill.name}
+                    </h3>
+                  </div>
+                  <button
+                    onClick={() => setExpandedSkill(null)}
+                    className="p-2 rounded-full hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+
+                <div className="relative bg-secondary overflow-hidden rounded-xl mb-6 max-h-[200px] flex items-center justify-center">
+                  <img
+                    src={expandedSkill.skill.certificate}
+                    alt={`${expandedSkill.skill.name} certificate`}
+                    className="w-full h-full object-contain max-h-[200px]"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center bg-secondary/60">
+                    <div className="text-center">
+                      <ImageIcon size={24} className="mx-auto text-muted-foreground mb-1" />
+                      <p className="text-xs text-muted-foreground">Certificate Image</p>
+                    </div>
                   </div>
                 </div>
-                <button
-                  onClick={() => setExpandedSkill(null)}
-                  className="absolute top-4 right-4 p-2 rounded-full bg-background/80 backdrop-blur-sm text-foreground hover:bg-background transition-colors"
-                >
-                  <X size={16} />
-                </button>
-              </div>
-              <div className="p-8">
-                <p className="text-[11px] text-accent font-semibold uppercase tracking-wider mb-1">
-                  {expandedSkill.category}
-                </p>
-                <h3 className="font-display text-2xl font-bold text-foreground mb-4">
-                  {expandedSkill.skill.name}
-                </h3>
+
                 <h4 className="font-display text-sm font-semibold text-foreground mb-2 uppercase tracking-wide">
                   Learning Journey
                 </h4>

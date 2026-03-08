@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Mail, Github, Linkedin, Phone, Send, MessageCircle } from "lucide-react";
+import { Mail, Github, Linkedin, Phone, Send, MessageCircle, Code2, Terminal } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import emailjs from "@emailjs/browser";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -141,11 +141,13 @@ const Contact = () => {
             </form>
 
             <TooltipProvider delayDuration={200}>
-              <div className="flex items-center gap-6">
+              <div className="flex items-center gap-6 flex-wrap">
                 {[
                   { icon: Github, label: "GitHub", href: "https://github.com/topics/e-commerce-website", tooltip: "You'll be redirected to John's Github" },
                   { icon: Linkedin, label: "LinkedIn", href: "http://linkedin.com/me", tooltip: "You'll be redirected to John's LinkedIn" },
                   { icon: MessageCircle, label: "WhatsApp", href: whatsappLink, tooltip: "You'll be redirected to John's WhatsApp chat" },
+                  { icon: Code2, label: "Leetcode", href: "http://leetcode.com/me", tooltip: "You'll be redirected to John's Leetcode profile" },
+                  { icon: Terminal, label: "Hackerrank", href: "http://hackerrank.com/me", tooltip: "You'll be redirected to John's Hackerrank profile" },
                 ].map(({ icon: Icon, label, href, tooltip }) => (
                   <Tooltip key={label}>
                     <TooltipTrigger asChild>
