@@ -5,11 +5,14 @@ const supabaseKey = import.meta.env.VITE_SUPABASE_KEY || "";
 
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Edge function URLs (from your deployed Supabase edge functions)
-export const EDGE_FUNCTION_VERIFY_URL =
-  "https://hjaeiuiuhkkyuws.supabase.co/functions/v1/smooth-responder";
-export const EDGE_FUNCTION_PUBLISH_URL =
-  "https://wmvrwwitsbhlupkkyuws.supabase.co/functions/v1/smooth-responder";
+// Edge function URLs - derived from your Supabase project URL
+// Both verify and publish use the same edge function
+export const EDGE_FUNCTION_VERIFY_URL = supabaseUrl
+  ? `${supabaseUrl}/functions/v1/smooth-responder`
+  : "";
+export const EDGE_FUNCTION_PUBLISH_URL = supabaseUrl
+  ? `${supabaseUrl}/functions/v1/smooth-responder`
+  : "";
 
 // Visitor session management
 export const getOrCreateVisitorId = async (): Promise<string> => {
