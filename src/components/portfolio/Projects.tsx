@@ -11,7 +11,7 @@ const projects = [
     details: "Built a distributed task queue system capable of processing over 10 million jobs per day. The architecture features automatic retries with exponential backoff, dead-letter queues for failed tasks, and a real-time monitoring dashboard. Implemented using Go for the core engine, Redis for queue management, gRPC for inter-service communication, and deployed on Kubernetes for horizontal scaling.",
     tags: ["Go", "Redis", "gRPC", "Kubernetes"],
     year: "2025",
-    image: "/placeholder.svg",
+    image: "/image/intern1",
     link: "https://123.vercel.app",
   },
   {
@@ -20,8 +20,8 @@ const projects = [
     details: "Designed and developed a composable CLI framework that enables teams to build internal developer tools rapidly. Features a plugin architecture for extensibility, interactive terminal prompts, auto-generated help documentation, and WebAssembly support for cross-platform distribution. Used by multiple teams to standardize development workflows.",
     tags: ["Rust", "WASM", "TypeScript"],
     year: "2024",
-    image: "/placeholder.svg",
-    link: "https://567.vercel.app",
+    image: "/image/intern2",
+    link: "https://167.vercel.app",
   },
   {
     title: "Real-time Analytics Engine",
@@ -29,7 +29,7 @@ const projects = [
     details: "Architected a real-time analytics engine processing billions of events with sub-second query latency. The pipeline ingests events via Apache Kafka, processes them through a Python-based stream processor, and stores results in ClickHouse for fast analytical queries. Includes a dashboard for real-time visualization and alerting.",
     tags: ["Python", "Apache Kafka", "ClickHouse"],
     year: "2024",
-    image: "/placeholder.svg",
+    image: "/image/intern3",
     link: "https://785.vercel.app",
   },
   {
@@ -38,7 +38,7 @@ const projects = [
     details: "Created a declarative infrastructure management platform supporting AWS, GCP, and Azure. Features include automatic drift detection, visual plan previews before applying changes, rollback capabilities, and a React-based dashboard for monitoring infrastructure state across multiple cloud providers.",
     tags: ["TypeScript", "AWS", "Terraform", "React"],
     year: "2023",
-    image: "/placeholder.svg",
+    image: "/image/intern4",
     link: "https://888.streamlit.app",
   },
 ];
