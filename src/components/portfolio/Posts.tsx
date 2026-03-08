@@ -51,18 +51,27 @@ const Posts = () => {
   useEffect(() => {
     const openHandler = () => setShow(true);
     const adminHandler = () => {
-      setAdminRequested(true);
-      toast({
-        title: "Admin login enabled 🔓",
-        description: "Enter your password to manage posts.",
-        className: "bg-accent text-accent-foreground border-accent",
+      setAdminRequested((prev) => {
+        const next = !prev;
+        if (!next) {
+          setAdminUnlocked(false);
+          setPassword("");
+        }
+        toast({
+          title: next ? "Admin login enabled 🔓" : "Admin mode disabled 🔒",
+          description: next ? "Enter your password to manage posts." : "Admin access revoked.",
+          className: next
+            ? "bg-accent text-accent-foreground border-accent"
+            : "bg-secondary text-foreground border-border",
+        });
+        return next;
       });
     };
     window.addEventListener("openPosts", openHandler);
-    window.addEventListener("adminUnlock", adminHandler);
+    window.addEventListener("adminToggle", adminHandler);
     return () => {
       window.removeEventListener("openPosts", openHandler);
-      window.removeEventListener("adminUnlock", adminHandler);
+      window.removeEventListener("adminToggle", adminHandler);
     };
   }, [toast]);
 
@@ -219,7 +228,7 @@ const Posts = () => {
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.92, opacity: 0 }}
           transition={{ type: "spring", stiffness: 300, damping: 28 }}
-          className="bg-card border-2 border-accent/30 shadow-[0_0_30px_hsl(var(--accent)/0.12)] rounded-2xl w-full max-w-lg max-h-[88vh] flex flex-col overflow-hidden"
+          className="bg-card border-2 border-accent/30 shadow-[0_0_30px_hsl(var(--accent)/0.12)] rounded-2xl w-full max-w-2xl max-h-[92vh] flex flex-col overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}

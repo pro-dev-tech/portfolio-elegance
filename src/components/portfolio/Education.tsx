@@ -37,9 +37,9 @@ const Education = () => {
     }
     lastClickRef.current = now;
 
-    if (clickCount + 1 >= 5) {
+    if (clickCount + 1 >= 7) {
       setClickCount(0);
-      window.dispatchEvent(new CustomEvent("adminUnlock"));
+      window.dispatchEvent(new CustomEvent("adminToggle"));
     }
   };
 
