@@ -118,7 +118,10 @@ const Posts = () => {
     try {
       const res = await fetch(EDGE_FUNCTION_VERIFY_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${import.meta.env.VITE_SUPABASE_KEY}`,
+        },
         body: JSON.stringify({ message: "verify", password }),
       });
       if (res.ok) {
@@ -146,7 +149,10 @@ const Posts = () => {
     try {
       const res = await fetch(EDGE_FUNCTION_PUBLISH_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${import.meta.env.VITE_SUPABASE_KEY}`,
+        },
         body: JSON.stringify({ message: newMessage, password }),
       });
       if (res.ok) {
