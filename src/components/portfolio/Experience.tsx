@@ -23,7 +23,7 @@ const experienceData = [
       "Built responsive front-end interfaces and integrated third-party APIs. Improved page load performance by 30%.",
     technologies: ["TypeScript", "Tailwind CSS", "REST APIs"],
     detailedJourney: "Worked on the customer-facing web application, rebuilding key pages with modern React patterns and TypeScript. Implemented lazy loading, code splitting, and image optimization that improved Lighthouse performance scores from 65 to 95. Integrated payment gateway and analytics APIs. Mentored by senior developers and participated in code reviews that significantly improved my coding practices.",
-    certificate: "/images/certi2.jpg",
+    certificate: "/images/cert2.jpg",
   },
 ];
 
