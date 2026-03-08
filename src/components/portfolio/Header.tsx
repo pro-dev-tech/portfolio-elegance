@@ -33,7 +33,11 @@ const Header = () => {
   }, [isDark]);
 
   const scrollTo = (id: string) => {
-    document.getElementById(id.toLowerCase())?.scrollIntoView({ behavior: "smooth" });
+    if (id.toLowerCase() === "posts") {
+      window.dispatchEvent(new CustomEvent("openPosts"));
+    } else {
+      document.getElementById(id.toLowerCase())?.scrollIntoView({ behavior: "smooth" });
+    }
     setMobileOpen(false);
   };
 

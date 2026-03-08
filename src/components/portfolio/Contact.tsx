@@ -79,17 +79,6 @@ const Contact = () => {
               </Button>
             </form>
 
-            {/* View Posts button */}
-            <div className="mb-8">
-              <Button
-                variant="hero-outline"
-                size="lg"
-                onClick={() => window.dispatchEvent(new CustomEvent("openPosts"))}
-              >
-                <BookOpen size={16} />
-                View Posts
-              </Button>
-            </div>
 
             <TooltipProvider delayDuration={200}>
               <div className="flex items-center gap-6 flex-wrap">
