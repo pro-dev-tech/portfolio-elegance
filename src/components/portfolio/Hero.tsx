@@ -63,7 +63,7 @@ const Hero = () => {
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-accent/30 via-secondary to-accent/15 p-[3px]">
                 <div className="w-full h-full rounded-[13px] overflow-hidden bg-secondary">
                   <img
-                    src="/photos/profile.png"
+                    src="/placeholder.svg"
                     alt="Profile photo"
                     className="w-full h-full object-cover"
                   />
