@@ -13,7 +13,7 @@ const experienceData = [
       "Developed REST APIs, optimized database queries, and contributed to CI/CD pipelines. Collaborated with cross-functional teams on product features.",
     technologies: ["React", "Node.js", "PostgreSQL"],
     detailedJourney: "During my internship, I was part of the platform engineering team where I designed and implemented 5 new REST API endpoints serving 10K+ daily requests. I optimized critical database queries reducing response times by 60%. I also set up automated CI/CD pipelines using GitHub Actions that reduced deployment time from 30 minutes to 5 minutes. Collaborated with product managers, designers, and senior engineers in an agile environment with daily standups and bi-weekly sprints.",
-    certificate: "/placeholder.svg",
+    certificate: "/images/certi1",
   },
   {
     role: "Web Development Intern",
@@ -23,7 +23,7 @@ const experienceData = [
       "Built responsive front-end interfaces and integrated third-party APIs. Improved page load performance by 30%.",
     technologies: ["TypeScript", "Tailwind CSS", "REST APIs"],
     detailedJourney: "Worked on the customer-facing web application, rebuilding key pages with modern React patterns and TypeScript. Implemented lazy loading, code splitting, and image optimization that improved Lighthouse performance scores from 65 to 95. Integrated payment gateway and analytics APIs. Mentored by senior developers and participated in code reviews that significantly improved my coding practices.",
-    certificate: "/placeholder.svg",
+    certificate: "/images/certi2",
   },
 ];
 
