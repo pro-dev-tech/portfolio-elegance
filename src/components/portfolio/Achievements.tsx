@@ -147,9 +147,6 @@ const Achievements = () => {
                     alt={achievement.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 flex items-center justify-center bg-secondary/70 opacity-100 group-hover:opacity-0 transition-opacity duration-300 pointer-events-none">
-                    <ImageIcon size={20} className="text-muted-foreground" />
-                  </div>
                 </div>
                 <div className="p-5 flex flex-col justify-center flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-2">
