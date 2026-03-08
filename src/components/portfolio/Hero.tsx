@@ -69,12 +69,6 @@ const Hero = () => {
                   />
                 </div>
               </div>
-              <div className="absolute inset-0 flex items-center justify-center bg-secondary/80 opacity-100 group-hover:opacity-0 transition-opacity duration-300 pointer-events-none rounded-2xl">
-                <div className="text-center">
-                  <User size={40} className="mx-auto text-muted-foreground mb-2" />
-                  {/* <p className="text-xs text-muted-foreground">Your Photo</p> */}
-                </div>
-              </div>
             </div>
           </motion.div>
         </motion.div>
