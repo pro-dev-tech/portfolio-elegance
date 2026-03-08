@@ -1,12 +1,25 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "";
 const supabaseKey = import.meta.env.VITE_SUPABASE_KEY || "";
 
-export const supabase = createClient(supabaseUrl, supabaseKey);
+// Only create client if credentials are provided
+const noopResult = { data: null, error: { message: "Supabase not configured" } };
+const noopChain: any = new Proxy(
+  {},
+  { get: () => (..._args: any[]) => Promise.resolve(noopResult) }
+);
+const noopClient = new Proxy({} as SupabaseClient, {
+  get: (_t, prop) => {
+    if (prop === "from") return () => noopChain;
+    return () => noopChain;
+  },
+});
+
+export const supabase: SupabaseClient =
+  supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : noopClient;
 
 // Edge function URLs - derived from your Supabase project URL
-// Both verify and publish use the same edge function
 export const EDGE_FUNCTION_VERIFY_URL = supabaseUrl
   ? `${supabaseUrl}/functions/v1/smooth-responder`
   : "";
