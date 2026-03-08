@@ -6,9 +6,11 @@ import Experience from "@/components/portfolio/Experience";
 import Projects from "@/components/portfolio/Projects";
 import Skills from "@/components/portfolio/Skills";
 import Achievements from "@/components/portfolio/Achievements";
+import Gallery from "@/components/portfolio/Gallery";
 import Contact from "@/components/portfolio/Contact";
 import Footer from "@/components/portfolio/Footer";
 import WelcomeGreeting from "@/components/portfolio/WelcomeGreeting";
+import Posts from "@/components/portfolio/Posts";
 
 const Index = () => {
   return (
@@ -22,8 +24,10 @@ const Index = () => {
       <Projects />
       <Skills />
       <Achievements />
+      <Gallery />
       <Contact />
       <Footer />
+      <Posts />
     </div>
   );
 };
