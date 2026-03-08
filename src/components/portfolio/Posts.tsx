@@ -71,7 +71,7 @@ const Posts = () => {
     window.addEventListener("adminToggle", adminHandler);
     return () => {
       window.removeEventListener("openPosts", openHandler);
-      window.removeEventListener("adminUnlock", adminHandler);
+      window.removeEventListener("adminToggle", adminHandler);
     };
   }, [toast]);
 
