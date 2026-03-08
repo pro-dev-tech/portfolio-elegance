@@ -152,10 +152,6 @@ const Skills = () => {
                     className="w-full h-full object-contain max-h-[200px]"
                   />
                   <div className="absolute inset-0 flex items-center justify-center bg-secondary/60">
-                    <div className="text-center">
-                      <ImageIcon size={24} className="mx-auto text-muted-foreground mb-1" />
-                      <p className="text-xs text-muted-foreground">Certificate Image</p>
-                    </div>
                   </div>
                 </div>
 
@@ -201,15 +197,13 @@ const Skills = () => {
               <div className="flex-1 overflow-auto p-6">
                 <div className="bg-secondary rounded-xl aspect-[8.5/11] flex items-center justify-center">
                   <div className="text-center">
-                    <FileText size={48} className="mx-auto text-muted-foreground mb-3" />
-                    <p className="text-sm text-muted-foreground">Upload your resume PDF</p>
-                    <p className="text-xs text-muted-foreground mt-1">Replace /placeholder.svg with your resume</p>
+                    <FileText size={48} className="mx-auto text-muted-foreground mb-3" /> 
                   </div>
                 </div>
               </div>
               <div className="p-6 border-t border-border">
                 <a
-                  href="/placeholder.svg"
+                  href="/resume.pdf"
                   download="John_Doe_Resume.pdf"
                   className="w-full"
                 >
