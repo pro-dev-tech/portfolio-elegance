@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Moon, Sun, Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const navItems = ["About", "Education", "Experience", "Projects", "Skills", "Achievements", "Gallery", "Contact"];
+const navItems = ["About", "Education", "Experience", "Projects", "Skills", "Achievements", "Gallery", "Posts", "Contact"];
 
 const Header = () => {
   const [isDark, setIsDark] = useState(false);
@@ -33,7 +33,11 @@ const Header = () => {
   }, [isDark]);
 
   const scrollTo = (id: string) => {
-    document.getElementById(id.toLowerCase())?.scrollIntoView({ behavior: "smooth" });
+    if (id.toLowerCase() === "posts") {
+      window.dispatchEvent(new CustomEvent("openPosts"));
+    } else {
+      document.getElementById(id.toLowerCase())?.scrollIntoView({ behavior: "smooth" });
+    }
     setMobileOpen(false);
   };
 
