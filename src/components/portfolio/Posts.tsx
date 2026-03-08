@@ -51,15 +51,24 @@ const Posts = () => {
   useEffect(() => {
     const openHandler = () => setShow(true);
     const adminHandler = () => {
-      setAdminRequested(true);
-      toast({
-        title: "Admin login enabled 🔓",
-        description: "Enter your password to manage posts.",
-        className: "bg-accent text-accent-foreground border-accent",
+      setAdminRequested((prev) => {
+        const next = !prev;
+        if (!next) {
+          setAdminUnlocked(false);
+          setPassword("");
+        }
+        toast({
+          title: next ? "Admin login enabled 🔓" : "Admin mode disabled 🔒",
+          description: next ? "Enter your password to manage posts." : "Admin access revoked.",
+          className: next
+            ? "bg-accent text-accent-foreground border-accent"
+            : "bg-secondary text-foreground border-border",
+        });
+        return next;
       });
     };
     window.addEventListener("openPosts", openHandler);
-    window.addEventListener("adminUnlock", adminHandler);
+    window.addEventListener("adminToggle", adminHandler);
     return () => {
       window.removeEventListener("openPosts", openHandler);
       window.removeEventListener("adminUnlock", adminHandler);
