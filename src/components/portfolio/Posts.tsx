@@ -228,7 +228,7 @@ const Posts = () => {
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.92, opacity: 0 }}
           transition={{ type: "spring", stiffness: 300, damping: 28 }}
-          className="bg-card border-2 border-accent/30 shadow-[0_0_30px_hsl(var(--accent)/0.12)] rounded-2xl w-full max-w-lg max-h-[88vh] flex flex-col overflow-hidden"
+          className="bg-card border-2 border-accent/30 shadow-[0_0_30px_hsl(var(--accent)/0.12)] rounded-2xl w-full max-w-2xl max-h-[92vh] flex flex-col overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
