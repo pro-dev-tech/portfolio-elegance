@@ -147,12 +147,6 @@ const Projects = () => {
                     alt={projects[expandedIndex].title}
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 flex items-center justify-center bg-secondary/60">
-                    <div className="text-center">
-                      <ImageIcon size={24} className="mx-auto text-muted-foreground mb-1" />
-                      <p className="text-xs text-muted-foreground">Project Screenshot</p>
-                    </div>
-                  </div>
                 </div>
 
                 <div className="flex flex-wrap gap-2 mb-4">
