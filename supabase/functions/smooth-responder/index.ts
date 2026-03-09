@@ -27,22 +27,29 @@ Deno.serve(async (req) => {
       .single();
 
     if (authError || !authData) {
-      return new Response("Auth config missing", {
+      return new Response(JSON.stringify({ error: "Auth config missing" }), {
         status: 500,
-        headers: corsHeaders,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    if (password !== authData.password) {
-      return new Response("Wrong password", {
+    // Trim both to avoid whitespace mismatches
+    const storedPassword = (authData.password || "").trim();
+    const inputPassword = (password || "").trim();
+
+    if (inputPassword !== storedPassword) {
+      return new Response(JSON.stringify({ error: "Wrong password" }), {
         status: 401,
-        headers: corsHeaders,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     // If just verifying, return success
     if (message === "verify") {
-      return new Response("OK", { status: 200, headers: corsHeaders });
+      return new Response(JSON.stringify({ success: true }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     // Otherwise, publish a post
@@ -51,14 +58,20 @@ Deno.serve(async (req) => {
     });
 
     if (insertError) {
-      return new Response(insertError.message, {
+      return new Response(JSON.stringify({ error: insertError.message }), {
         status: 500,
-        headers: corsHeaders,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    return new Response("Published", { status: 200, headers: corsHeaders });
+    return new Response(JSON.stringify({ success: true }), {
+      status: 200,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   } catch (err) {
-    return new Response(String(err), { status: 500, headers: corsHeaders });
+    return new Response(JSON.stringify({ error: String(err) }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
 });
