@@ -1,0 +1,5 @@
+[project]
+id = "wmvrwwitsbhlupkkyuws"
+
+[functions.smooth-responder]
+verify_jwt = false
