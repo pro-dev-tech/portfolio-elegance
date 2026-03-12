@@ -46,13 +46,10 @@ const Achievements = () => {
 
   useScrollLock(expandedIndex !== null);
 
-  // Button carousel: shift every 3 seconds
+  // Sync button offset to active marquee card
   useEffect(() => {
-    const interval = setInterval(() => {
-      setButtonOffset((prev) => prev + 1);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
+    setButtonOffset(activeIndex);
+  }, [activeIndex]);
 
   const animate = useCallback((time: number) => {
     if (lastTimeRef.current === 0) lastTimeRef.current = time;
