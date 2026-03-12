@@ -95,14 +95,13 @@ const Achievements = () => {
     return items;
   };
 
-  // Generate the button order for the carousel: items shift RIGHT continuously
-  // At buttonOffset=0: [0,1,2], at buttonOffset=1: [2,0,1], at buttonOffset=2: [1,2,0]
+  // Button order: activeIndex always in center (position 1)
+  // left = prev, center = active (glows), right = next
   const getCarouselOrder = (): number[] => {
-    const order: number[] = [];
-    for (let i = 0; i < count; i++) {
-      order.push(((i - buttonOffset % count) + count * 100) % count);
-    }
-    return order;
+    const left = ((activeIndex - 1) + count) % count;
+    const center = activeIndex;
+    const right = (activeIndex + 1) % count;
+    return [left, center, right];
   };
 
   const carouselOrder = getCarouselOrder();
