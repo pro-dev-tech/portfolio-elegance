@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Trophy, X } from "lucide-react";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
 
@@ -30,29 +30,29 @@ const achievementsData = [
 const CARD_WIDTH = 540;
 const GAP = 24;
 const ITEM_TOTAL = CARD_WIDTH + GAP;
-const SPEED = 70;
-
-// Compute button order so activeIndex is always in the center
-const getButtonOrder = (activeIdx: number, total: number): number[] => {
-  const center = Math.floor(total / 2);
-  const order: number[] = [];
-  for (let i = 0; i < total; i++) {
-    order.push(((activeIdx - center + i) % total + total) % total);
-  }
-  return order;
-};
+const SPEED = 120;
 
 const Achievements = () => {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
   const [offset, setOffset] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [buttonOffset, setButtonOffset] = useState(0);
   const animRef = useRef<number>(0);
   const lastTimeRef = useRef<number>(0);
   const isPausedRef = useRef(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const totalWidth = achievementsData.length * ITEM_TOTAL;
+  const count = achievementsData.length;
 
   useScrollLock(expandedIndex !== null);
+
+  // Button carousel: shift every 3 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setButtonOffset((prev) => prev + 1);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
   const animate = useCallback((time: number) => {
     if (lastTimeRef.current === 0) lastTimeRef.current = time;
@@ -80,9 +80,9 @@ const Achievements = () => {
     const idx =
       Math.floor(
         (((center % totalWidth) + totalWidth) % totalWidth) / ITEM_TOTAL
-      ) % achievementsData.length;
+      ) % count;
     setActiveIndex(idx);
-  }, [offset, totalWidth]);
+  }, [offset, totalWidth, count]);
 
   const renderCards = () => {
     const items: { achievement: (typeof achievementsData)[0]; origIndex: number; position: number }[] = [];
@@ -98,7 +98,17 @@ const Achievements = () => {
     return items;
   };
 
-  const buttonOrder = getButtonOrder(activeIndex, achievementsData.length);
+  // Generate the button order for the carousel: items shift RIGHT continuously
+  // At buttonOffset=0: [0,1,2], at buttonOffset=1: [2,0,1], at buttonOffset=2: [1,2,0]
+  const getCarouselOrder = (): number[] => {
+    const order: number[] = [];
+    for (let i = 0; i < count; i++) {
+      order.push(((i - buttonOffset % count) + count * 100) % count);
+    }
+    return order;
+  };
+
+  const carouselOrder = getCarouselOrder();
 
   return (
     <section id="achievements" className="section-padding border-t border-border">
@@ -140,13 +150,13 @@ const Achievements = () => {
               }}
               onClick={() => setExpandedIndex(origIndex)}
             >
-              <div className="flex rounded-xl border border-border bg-card overflow-hidden hover:border-accent/50 hover:shadow-lg transition-all duration-300 h-[160px]">
+              <div className="flex rounded-xl border border-border bg-card overflow-hidden hover:border-accent/50 hover:shadow-[0_4px_24px_hsl(var(--accent)/0.15)] hover:-translate-y-1 transition-all duration-300 h-[160px]">
                 <div className="relative w-[140px] h-full bg-secondary overflow-hidden flex-shrink-0">
                   <img
                     src={achievement.image}
                     alt={achievement.title}
                     loading="lazy"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                 </div>
                 <div className="p-5 flex flex-col justify-center flex-1 min-w-0">
@@ -162,36 +172,35 @@ const Achievements = () => {
                   <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
                     {achievement.date}
                   </p>
-                  <p className="text-[10px] text-accent mt-2 font-medium">Click to expand →</p>
+                  <p className="text-[10px] text-accent mt-2 font-medium group-hover:translate-x-1 transition-transform duration-300">Click to expand →</p>
                 </div>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Rotating indicator buttons */}
-        <div className="mt-6 flex justify-center">
-          <LayoutGroup>
-            <div className="flex gap-3">
-              {buttonOrder.map((idx) => (
-                <motion.button
-                  key={achievementsData[idx].title}
-                  layout
-                  transition={{ type: "spring", stiffness: 250, damping: 28 }}
-                  onClick={() => setExpandedIndex(idx)}
-                  className={`
-                    text-xs px-4 py-2 rounded-full border font-medium transition-colors duration-300 whitespace-nowrap
-                    ${activeIndex === idx
-                      ? "border-accent bg-accent/15 text-accent shadow-[0_0_14px_hsl(var(--accent)/0.4)]"
-                      : "border-border bg-card text-muted-foreground hover:border-accent/30 hover:text-foreground"
-                    }
-                  `}
-                >
-                  {achievementsData[idx].title}
-                </motion.button>
-              ))}
-            </div>
-          </LayoutGroup>
+        {/* Button carousel — train-like left-to-right loop */}
+        <div className="mt-6 flex justify-center overflow-hidden">
+          <div className="relative flex gap-3" style={{ width: `${count * 180}px` }}>
+            {carouselOrder.map((idx, pos) => (
+              <motion.button
+                key={`btn-${idx}`}
+                layout
+                transition={{ type: "spring", stiffness: 200, damping: 26 }}
+                onClick={() => setExpandedIndex(idx)}
+                style={{ position: "relative" }}
+                className={`
+                  text-xs px-4 py-2 rounded-full border font-medium whitespace-nowrap flex-1 transition-colors duration-300
+                  ${activeIndex === idx
+                    ? "border-accent bg-accent/15 text-accent shadow-[0_0_14px_hsl(var(--accent)/0.4)]"
+                    : "border-border bg-card text-muted-foreground hover:border-accent/30 hover:text-foreground hover:shadow-[0_0_10px_hsl(var(--accent)/0.1)]"
+                  }
+                `}
+              >
+                {achievementsData[idx].title}
+              </motion.button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -223,7 +232,7 @@ const Achievements = () => {
                   </div>
                   <button
                     onClick={() => setExpandedIndex(null)}
-                    className="p-2 rounded-full hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+                    className="p-2 rounded-full hover:bg-secondary text-muted-foreground hover:text-foreground hover:rotate-90 transition-all duration-300"
                   >
                     <X size={16} />
                   </button>
