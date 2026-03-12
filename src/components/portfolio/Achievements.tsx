@@ -46,13 +46,10 @@ const Achievements = () => {
 
   useScrollLock(expandedIndex !== null);
 
-  // Button carousel: shift every 3 seconds
+  // Sync button offset to active marquee card
   useEffect(() => {
-    const interval = setInterval(() => {
-      setButtonOffset((prev) => prev + 1);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
+    setButtonOffset(activeIndex);
+  }, [activeIndex]);
 
   const animate = useCallback((time: number) => {
     if (lastTimeRef.current === 0) lastTimeRef.current = time;
@@ -98,14 +95,13 @@ const Achievements = () => {
     return items;
   };
 
-  // Generate the button order for the carousel: items shift RIGHT continuously
-  // At buttonOffset=0: [0,1,2], at buttonOffset=1: [2,0,1], at buttonOffset=2: [1,2,0]
+  // Button order: activeIndex always in center (position 1)
+  // left = prev, center = active (glows), right = next
   const getCarouselOrder = (): number[] => {
-    const order: number[] = [];
-    for (let i = 0; i < count; i++) {
-      order.push(((i - buttonOffset % count) + count * 100) % count);
-    }
-    return order;
+    const left = ((activeIndex - 1) + count) % count;
+    const center = activeIndex;
+    const right = (activeIndex + 1) % count;
+    return [left, center, right];
   };
 
   const carouselOrder = getCarouselOrder();
@@ -191,7 +187,7 @@ const Achievements = () => {
                 style={{ position: "relative" }}
                 className={`
                   text-xs px-4 py-2 rounded-full border font-medium whitespace-nowrap flex-1 transition-colors duration-300
-                  ${activeIndex === idx
+                  ${pos === 1
                     ? "border-accent bg-accent/15 text-accent shadow-[0_0_14px_hsl(var(--accent)/0.4)]"
                     : "border-border bg-card text-muted-foreground hover:border-accent/30 hover:text-foreground hover:shadow-[0_0_10px_hsl(var(--accent)/0.1)]"
                   }
