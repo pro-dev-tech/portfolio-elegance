@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS visitors (
 );
 ALTER TABLE visitors ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Anyone can insert visitors" ON visitors FOR INSERT WITH CHECK (true);
+CREATE POLICY "Anyone can update visitors" ON visitors FOR UPDATE USING (true) WITH CHECK (true);
 
 -- Owner auth table
 CREATE TABLE IF NOT EXISTS owner_auth (

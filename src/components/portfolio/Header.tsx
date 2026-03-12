@@ -51,7 +51,7 @@ const Header = () => {
       }`}
     >
       <div className="max-w-6xl mx-auto flex items-center justify-between px-6 md:px-12 h-16">
-        <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="font-display text-lg font-semibold tracking-tight text-foreground">
+        <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="font-display text-lg font-semibold tracking-tight text-foreground hover:scale-105 transition-transform duration-200">
           JD<span className="text-accent">.</span>
         </button>
 
@@ -60,15 +60,19 @@ const Header = () => {
             <button
               key={item}
               onClick={() => scrollTo(item)}
-              className="relative text-sm font-medium transition-colors py-1"
+              className="relative text-sm font-medium transition-all duration-200 py-1 group"
             >
-              <span className={activeSection === item.toLowerCase() ? "text-foreground" : "text-muted-foreground hover:text-foreground"}>
+              <span className={`transition-all duration-200 ${
+                activeSection === item.toLowerCase()
+                  ? "text-foreground"
+                  : "text-muted-foreground group-hover:text-foreground group-hover:translate-y-[-1px]"
+              }`}>
                 {item}
               </span>
               {activeSection === item.toLowerCase() && (
                 <motion.div
                   layoutId="nav-underline"
-                  className="absolute -bottom-1 left-0 right-0 h-0.5 bg-accent rounded-full"
+                  className="absolute -bottom-1 left-0 right-0 h-0.5 bg-accent rounded-full shadow-[0_0_8px_hsl(var(--accent)/0.5)]"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
               )}
@@ -76,7 +80,7 @@ const Header = () => {
           ))}
           <button
             onClick={() => setIsDark(!isDark)}
-            className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+            className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-secondary hover:rotate-180 transition-all duration-500"
             aria-label="Toggle theme"
           >
             {isDark ? <Sun size={16} /> : <Moon size={16} />}
@@ -112,14 +116,14 @@ const Header = () => {
                 <button
                   key={item}
                   onClick={() => scrollTo(item)}
-                  className={`text-sm font-medium transition-colors text-left flex items-center gap-2 ${
+                  className={`text-sm font-medium transition-all duration-200 text-left flex items-center gap-2 hover:translate-x-1 ${
                     activeSection === item.toLowerCase()
                       ? "text-foreground"
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   {activeSection === item.toLowerCase() && (
-                    <span className="w-2 h-2 rounded-full bg-accent" />
+                    <span className="w-2 h-2 rounded-full bg-accent shadow-[0_0_6px_hsl(var(--accent)/0.5)]" />
                   )}
                   {item}
                 </button>

@@ -19,7 +19,7 @@ const noopClient = new Proxy({} as SupabaseClient, {
 export const supabase: SupabaseClient =
   supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : noopClient;
 
-// Edge function URLs - derived from your Supabase project URL
+// Edge function URLs
 export const EDGE_FUNCTION_VERIFY_URL = supabaseUrl
   ? `${supabaseUrl}/functions/v1/smooth-responder`
   : "";
@@ -30,19 +30,35 @@ export const EDGE_FUNCTION_PUBLISH_URL = supabaseUrl
 // Visitor session management
 export const getOrCreateVisitorId = async (): Promise<string> => {
   let visitorUuid = localStorage.getItem("portfolio_visitor_uuid");
-  if (visitorUuid) return visitorUuid;
+
+  if (visitorUuid) {
+    // Returning visitor — update last_visit
+    await supabase.from("visitors").upsert(
+      {
+        id: visitorUuid,
+        session_id: visitorUuid,
+        user_agent: navigator.userAgent,
+        last_visit: new Date().toISOString(),
+      },
+      { onConflict: "id" }
+    );
+    return visitorUuid;
+  }
 
   visitorUuid = crypto.randomUUID();
   localStorage.setItem("portfolio_visitor_uuid", visitorUuid);
 
-  // Insert into visitors table
-  await supabase.from("visitors").insert({
-    id: visitorUuid,
-    session_id: visitorUuid,
-    user_agent: navigator.userAgent,
-    first_visit: new Date().toISOString(),
-    last_visit: new Date().toISOString(),
-  });
+  // New visitor
+  await supabase.from("visitors").upsert(
+    {
+      id: visitorUuid,
+      session_id: visitorUuid,
+      user_agent: navigator.userAgent,
+      first_visit: new Date().toISOString(),
+      last_visit: new Date().toISOString(),
+    },
+    { onConflict: "id" }
+  );
 
   return visitorUuid;
 };
