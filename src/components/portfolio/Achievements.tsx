@@ -187,7 +187,7 @@ const Achievements = () => {
                 style={{ position: "relative" }}
                 className={`
                   text-xs px-4 py-2 rounded-full border font-medium whitespace-nowrap flex-1 transition-colors duration-300
-                  ${activeIndex === idx
+                  ${pos === 1
                     ? "border-accent bg-accent/15 text-accent shadow-[0_0_14px_hsl(var(--accent)/0.4)]"
                     : "border-border bg-card text-muted-foreground hover:border-accent/30 hover:text-foreground hover:shadow-[0_0_10px_hsl(var(--accent)/0.1)]"
                   }
