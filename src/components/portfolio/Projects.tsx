@@ -117,7 +117,15 @@ const Projects = () => {
                 <div className="flex items-start justify-between mb-6">
                   <div>
                     <p className="text-[11px] text-accent font-semibold uppercase tracking-wider mb-2">{projects[expandedIndex].year}</p>
-                    <h3 className="font-display text-2xl font-bold text-foreground">{projects[expandedIndex].title}</h3>
+                    <div className="flex items-center gap-4">
+                      <h3 className="font-display text-2xl font-bold text-foreground">{projects[expandedIndex].title}</h3>
+                      <a href={projects[expandedIndex].link} target="_blank" rel="noopener noreferrer">
+                        <Button variant="hero" size="sm">
+                          <ExternalLink size={14} />
+                          View Work
+                        </Button>
+                      </a>
+                    </div>
                   </div>
                   <button onClick={() => setExpandedIndex(null)} className="p-2 rounded-full hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors">
                     <X size={16} />
@@ -139,13 +147,7 @@ const Projects = () => {
                     <span key={tag} className="text-xs px-3 py-1 rounded-full bg-secondary text-secondary-foreground font-medium">{tag}</span>
                   ))}
                 </div>
-                <p className="text-muted-foreground leading-relaxed mb-6">{projects[expandedIndex].details}</p>
-                <a href={projects[expandedIndex].link} target="_blank" rel="noopener noreferrer">
-                  <Button variant="hero" size="lg">
-                    <ExternalLink size={16} />
-                    View Work
-                  </Button>
-                </a>
+                <p className="text-muted-foreground leading-relaxed">{projects[expandedIndex].details}</p>
               </div>
             </motion.div>
           </motion.div>
