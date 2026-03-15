@@ -94,7 +94,7 @@ const Skills = () => {
                     <button
                       key={skill.name}
                       onClick={() => setExpandedSkill({ category: group.category, skill })}
-                      className="block text-muted-foreground text-sm hover:text-accent transition-colors cursor-pointer text-left group"
+                      className="block text-muted-foreground text-sm hover:text-accent-hover transition-colors cursor-pointer text-left group"
                     >
                       <span className="relative">
                         {skill.name}
