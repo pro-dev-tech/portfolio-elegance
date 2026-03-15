@@ -60,7 +60,7 @@ const Hero = () => {
                 {/* Orange bar (accent) */}
                 <rect
                   className="animate-[travel_4s_linear_infinite]"
-                  x="0" y="0" width="0" height="0"
+                  x="2" y="2" width="196" height="196"
                   rx="13"
                   ry="13"
                   stroke="hsl(38, 90%, 52%)"
@@ -69,14 +69,11 @@ const Hero = () => {
                   strokeDashoffset="0"
                   strokeLinecap="round"
                   fill="none"
-                  style={{
-                    width: '196px', height: '196px', x: 2, y: 2,
-                  }}
                 />
                 {/* Blue bar */}
                 <rect
                   className="animate-[travel_4s_linear_infinite]"
-                  x="0" y="0" width="0" height="0"
+                  x="2" y="2" width="196" height="196"
                   rx="13"
                   ry="13"
                   stroke="hsl(217, 91%, 60%)"
@@ -85,9 +82,6 @@ const Hero = () => {
                   strokeDashoffset="-300"
                   strokeLinecap="round"
                   fill="none"
-                  style={{
-                    width: '196px', height: '196px', x: 2, y: 2,
-                  }}
                 />
               </svg>
               <div className="absolute inset-[6px] rounded-2xl overflow-hidden bg-secondary">
