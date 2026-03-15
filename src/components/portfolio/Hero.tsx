@@ -57,29 +57,29 @@ const Hero = () => {
                 viewBox="0 0 200 200"
                 fill="none"
               >
-                {/* Orange bar (accent) */}
+              {/* Orange bar */}
                 <rect
-                  className="animate-[travel_4s_linear_infinite]"
+                  className="animate-travel"
                   x="2" y="2" width="196" height="196"
                   rx="13"
                   ry="13"
                   stroke="hsl(38, 90%, 52%)"
                   strokeWidth="3"
-                  strokeDasharray="80 520"
+                  strokeDasharray="80 682"
                   strokeDashoffset="0"
                   strokeLinecap="round"
                   fill="none"
                 />
                 {/* Blue bar */}
                 <rect
-                  className="animate-[travel_4s_linear_infinite]"
+                  className="animate-travel"
                   x="2" y="2" width="196" height="196"
                   rx="13"
                   ry="13"
                   stroke="hsl(217, 91%, 60%)"
                   strokeWidth="3"
-                  strokeDasharray="80 520"
-                  strokeDashoffset="-300"
+                  strokeDasharray="80 682"
+                  strokeDashoffset="-381"
                   strokeLinecap="round"
                   fill="none"
                 />

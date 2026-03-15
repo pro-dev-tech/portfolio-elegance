@@ -79,7 +79,7 @@ export default {
         },
         travel: {
           "0%": { strokeDashoffset: "0" },
-          "100%": { strokeDashoffset: "-600" },
+          "100%": { strokeDashoffset: "-762" },
         },
       },
       animation: {
