@@ -117,6 +117,14 @@
   .section-padding {
     @apply px-6 md:px-12 lg:px-24 py-20 md:py-28;
   }
+
+  .profile-frame-bar-accent {
+    stroke: hsl(var(--accent));
+  }
+
+  .profile-frame-bar-contrast {
+    stroke: hsl(var(--frame-bar-contrast));
+  }
 }
 
 /* Custom slim scrollbar */

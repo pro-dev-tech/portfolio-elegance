@@ -59,27 +59,24 @@ const Hero = () => {
               >
               {/* Orange bar */}
                 <rect
-                  className="animate-travel"
+                  className="animate-travel profile-frame-bar-accent"
                   x="2" y="2" width="196" height="196"
                   rx="13"
                   ry="13"
-                  stroke="hsl(38, 90%, 52%)"
                   strokeWidth="3"
-                  strokeDasharray="80 682"
-                  strokeDashoffset="0"
+                  strokeDasharray="92 670"
                   strokeLinecap="round"
                   fill="none"
                 />
                 {/* Blue bar */}
                 <rect
-                  className="animate-travel"
+                  className="animate-travel profile-frame-bar-contrast"
+                  style={{ animationDelay: "-2s" }}
                   x="2" y="2" width="196" height="196"
                   rx="13"
                   ry="13"
-                  stroke="hsl(217, 91%, 60%)"
                   strokeWidth="3"
-                  strokeDasharray="80 682"
-                  strokeDashoffset="-381"
+                  strokeDasharray="92 670"
                   strokeLinecap="round"
                   fill="none"
                 />
