@@ -76,10 +76,10 @@ const Projects = () => {
               <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-3">
-                    <h3 className="font-display text-xl md:text-2xl font-semibold text-foreground group-hover:text-accent transition-colors">
+                    <h3 className="font-display text-xl md:text-2xl font-semibold text-foreground group-hover:text-accent-hover transition-colors">
                       {project.title}
                     </h3>
-                    <ArrowUpRight size={18} className="text-muted-foreground group-hover:text-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                    <ArrowUpRight size={18} className="text-muted-foreground group-hover:text-accent-hover group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
                   </div>
                   <p className="text-muted-foreground max-w-xl leading-relaxed text-sm md:text-base">{project.description}</p>
                   <div className="flex flex-wrap gap-2 mt-4">
