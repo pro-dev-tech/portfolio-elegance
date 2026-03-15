@@ -50,7 +50,7 @@ const Hero = () => {
             transition={{ duration: 0.6, delay: 0.5 }}
             className="hidden md:flex items-center justify-center"
           >
-            <div className="w-[270px] h-[270px] lg:w-[298px] lg:h-[298px] rounded-2xl overflow-hidden relative group shadow-xl ring-1 ring-border/60">
+            <div className="w-[320px] h-[320px] lg:w-[360px] lg:h-[360px] rounded-2xl overflow-hidden relative group shadow-xl ring-1 ring-border/60">
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-accent/30 via-secondary to-accent/15 p-[3px]">
                 <div className="w-full h-full rounded-[13px] overflow-hidden bg-secondary">
                   <img
