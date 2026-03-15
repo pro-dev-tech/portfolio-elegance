@@ -50,16 +50,53 @@ const Hero = () => {
             transition={{ duration: 0.6, delay: 0.5 }}
             className="hidden md:flex items-center justify-center"
           >
-            <div className="w-[320px] h-[320px] lg:w-[360px] lg:h-[360px] rounded-2xl overflow-hidden relative group shadow-xl ring-1 ring-border/60">
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-accent/30 via-secondary to-accent/15 p-[3px]">
-                <div className="w-full h-full rounded-[13px] overflow-hidden bg-secondary">
-                  <img
-                    src="/images/profile.png"
-                    alt="Profile photo"
-                    loading="eager"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+            <div className="w-[320px] h-[320px] lg:w-[360px] lg:h-[360px] relative">
+              {/* Animated traveling bars */}
+              <svg
+                className="absolute inset-0 w-full h-full pointer-events-none"
+                viewBox="0 0 200 200"
+                fill="none"
+              >
+                {/* Orange bar (accent) */}
+                <rect
+                  className="animate-[travel_4s_linear_infinite]"
+                  x="0" y="0" width="0" height="0"
+                  rx="13"
+                  ry="13"
+                  stroke="hsl(38, 90%, 52%)"
+                  strokeWidth="3"
+                  strokeDasharray="80 520"
+                  strokeDashoffset="0"
+                  strokeLinecap="round"
+                  fill="none"
+                  style={{
+                    width: '196px', height: '196px', x: 2, y: 2,
+                  }}
+                />
+                {/* Blue bar */}
+                <rect
+                  className="animate-[travel_4s_linear_infinite]"
+                  x="0" y="0" width="0" height="0"
+                  rx="13"
+                  ry="13"
+                  stroke="hsl(217, 91%, 60%)"
+                  strokeWidth="3"
+                  strokeDasharray="80 520"
+                  strokeDashoffset="-300"
+                  strokeLinecap="round"
+                  fill="none"
+                  style={{
+                    width: '196px', height: '196px', x: 2, y: 2,
+                  }}
+                />
+              </svg>
+              <div className="absolute inset-[6px] rounded-2xl overflow-hidden bg-secondary">
+                <img
+                  src="/images/profile.png"
+                  alt="Profile photo"
+                  loading="eager"
+                  className="w-full h-full object-cover"
+                />
               </div>
             </div>
           </motion.div>
