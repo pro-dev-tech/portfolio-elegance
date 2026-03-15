@@ -63,13 +63,13 @@ const Experience = () => {
                   <div>
                     <button
                       onClick={() => setExpandedIndex(i)}
-                      className="font-display text-lg font-semibold text-foreground hover:text-accent transition-colors cursor-pointer text-left group flex items-center gap-2"
+                      className="font-display text-lg font-semibold text-foreground hover:text-accent-hover transition-colors cursor-pointer text-left group flex items-center gap-2"
                     >
                       <span className="relative">
                         {exp.role}
                         <span className="absolute -bottom-0.5 left-0 w-0 h-[1px] bg-accent group-hover:w-full transition-all duration-300" />
                       </span>
-                      <ArrowRight size={14} className="text-muted-foreground group-hover:text-accent group-hover:translate-x-0.5 transition-all shrink-0" />
+                      <ArrowRight size={14} className="text-muted-foreground group-hover:text-accent-hover group-hover:translate-x-0.5 transition-all shrink-0" />
                     </button>
                     <p className="text-sm text-accent font-medium">{exp.company}</p>
                   </div>
