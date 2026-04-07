@@ -21,19 +21,17 @@ interface Post {
 const Posts = () => {
   const [show, setShow] = useState(false);
   const [posts, setPosts] = useState<Post[]>([]);
-  const [reactions, setReactions] = useState<Record<string, ReactionCount[]>>({});
   const [adminRequested, setAdminRequested] = useState(false);
   const [adminUnlocked, setAdminUnlocked] = useState(false);
   const [password, setPassword] = useState("");
   const [newMessage, setNewMessage] = useState("");
   const [sending, setSending] = useState(false);
-  const [visitorId, setVisitorId] = useState<string | null>(null);
   const { toast } = useToast();
 
   useScrollLock(show);
 
   useEffect(() => {
-    getOrCreateVisitorId().then(setVisitorId);
+    getOrCreateVisitorId();
   }, []);
 
   useEffect(() => {
@@ -72,38 +70,23 @@ const Posts = () => {
     if (data) setPosts(data);
   }, []);
 
-  const fetchReactions = useCallback(async () => {
-    const { data } = await supabase
-      .from("post_reactions")
-      .select("post_id, emoji");
-    if (data) {
-      const grouped: Record<string, Record<string, number>> = {};
-      data.forEach((r: { post_id: string; emoji: string }) => {
-        if (!grouped[r.post_id]) grouped[r.post_id] = {};
-        grouped[r.post_id][r.emoji] = (grouped[r.post_id][r.emoji] || 0) + 1;
-      });
-      const result: Record<string, ReactionCount[]> = {};
-      Object.entries(grouped).forEach(([pid, emojis]) => {
-        result[pid] = Object.entries(emojis)
-          .map(([emoji, count]) => ({ emoji, count }))
-          .sort((a, b) => b.count - a.count);
-      });
-      setReactions(result);
-    }
-  }, []);
-
   useEffect(() => {
     if (show) {
       fetchPosts();
-      fetchReactions();
     }
-  }, [show, fetchPosts, fetchReactions]);
+  }, [show, fetchPosts]);
 
   const verifyPassword = async () => {
     if (!password.trim()) return;
     setSending(true);
     try {
-      const res = await fetch(EDGE_FUNCTION_VERIFY_URL, {
+      const url = getEdgeFunctionUrl();
+      if (!url) {
+        toast({ title: "Backend not configured", variant: "destructive" });
+        setSending(false);
+        return;
+      }
+      const res = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -127,7 +110,13 @@ const Posts = () => {
     if (!adminUnlocked || !newMessage.trim()) return;
     setSending(true);
     try {
-      const res = await fetch(EDGE_FUNCTION_PUBLISH_URL, {
+      const url = getEdgeFunctionUrl();
+      if (!url) {
+        toast({ title: "Backend not configured", variant: "destructive" });
+        setSending(false);
+        return;
+      }
+      const res = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -154,33 +143,28 @@ const Posts = () => {
     if (!error) {
       toast({ title: "Post deleted", className: "bg-green-600 text-white border-green-700" });
       fetchPosts();
-      fetchReactions();
     } else {
-      toast({ title: "Failed to delete. Add a DELETE RLS policy on the posts table.", variant: "destructive" });
+      toast({ title: "Failed to delete.", variant: "destructive" });
     }
-  };
-
-  const reactToPost = async (postId: string, emoji: string) => {
-    if (!visitorId) return;
-    const { error } = await supabase.from("post_reactions").insert({
-      post_id: postId,
-      visitor_id: visitorId,
-      emoji,
-    });
-    if (error) {
-      toast({ title: "Already reacted with this emoji!" });
-    }
-    fetchReactions();
   };
 
   const formatDate = (iso: string) => {
     const d = new Date(iso);
+    const now = new Date();
+    const diffMs = now.getTime() - d.getTime();
+    const diffMin = Math.floor(diffMs / 60000);
+    const diffHr = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMin < 1) return "Just now";
+    if (diffMin < 60) return `${diffMin}m ago`;
+    if (diffHr < 24) return `${diffHr}h ago`;
+    if (diffDays < 7) return `${diffDays}d ago`;
+
     return d.toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
       year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
     });
   };
 
@@ -237,12 +221,12 @@ const Posts = () => {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="group bg-secondary/30 border border-border rounded-xl p-5 space-y-4 hover:border-accent/30 hover:bg-secondary/50 hover:shadow-[0_4px_20px_hsl(var(--accent)/0.08)] transition-all duration-300"
+                className="group bg-secondary/30 border border-border rounded-xl p-5 space-y-3 hover:border-accent/30 hover:bg-secondary/50 hover:shadow-[0_4px_20px_hsl(var(--accent)/0.08)] transition-all duration-300"
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent/20 to-accent/5 flex items-center justify-center text-sm font-bold text-accent ring-2 ring-accent/10">
-                      JD
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent/20 to-accent/5 flex items-center justify-center ring-2 ring-accent/10">
+                      <MessageSquare size={16} className="text-accent" />
                     </div>
                     <div>
                       <p className="text-sm font-semibold text-foreground">John Doe</p>
@@ -263,7 +247,6 @@ const Posts = () => {
                 <p className="text-sm text-foreground/90 leading-relaxed whitespace-pre-wrap pl-[52px]">
                   {post.message}
                 </p>
-
               </motion.div>
             ))}
           </div>
