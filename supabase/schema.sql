@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS visitors (
   last_visit timestamptz
 );
 ALTER TABLE visitors ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Anyone can read visitors" ON visitors FOR SELECT USING (true);
 CREATE POLICY "Anyone can insert visitors" ON visitors FOR INSERT WITH CHECK (true);
 CREATE POLICY "Anyone can update visitors" ON visitors FOR UPDATE USING (true) WITH CHECK (true);
 
