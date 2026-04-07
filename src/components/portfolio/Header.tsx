@@ -89,12 +89,9 @@ const Header = () => {
 
         <div className="flex md:hidden items-center gap-2">
           <button
-            onClick={() => {
-              const next = !isDark;
-              setIsDark(next);
-              document.documentElement.classList.toggle("dark", next);
-            }}
+            onClick={() => setIsDark((prev) => !prev)}
             className="p-2 rounded-full text-muted-foreground hover:text-foreground transition-colors"
+            aria-label="Toggle theme"
           >
             {isDark ? <Sun size={16} /> : <Moon size={16} />}
           </button>
