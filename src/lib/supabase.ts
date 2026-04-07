@@ -19,13 +19,13 @@ const noopClient = new Proxy({} as SupabaseClient, {
 export const supabase: SupabaseClient =
   supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : noopClient;
 
-// Edge function URLs
-export const EDGE_FUNCTION_VERIFY_URL = supabaseUrl
-  ? `${supabaseUrl}/functions/v1/smooth-responder`
-  : "";
-export const EDGE_FUNCTION_PUBLISH_URL = supabaseUrl
-  ? `${supabaseUrl}/functions/v1/smooth-responder`
-  : "";
+// Edge function URLs - use relative path for platform independence (works on Vercel, Netlify, etc.)
+export const getEdgeFunctionUrl = () => {
+  if (supabaseUrl) {
+    return `${supabaseUrl}/functions/v1/smooth-responder`;
+  }
+  return "";
+};
 
 // Visitor session management
 export const getOrCreateVisitorId = async (): Promise<string> => {

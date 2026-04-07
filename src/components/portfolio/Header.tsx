@@ -52,7 +52,7 @@ const Header = () => {
     >
       <div className="max-w-6xl mx-auto flex items-center justify-between px-6 md:px-12 h-16">
         <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="font-display text-lg font-semibold tracking-tight text-foreground hover:scale-105 transition-transform duration-200">
-          JD<span className="text-accent">.</span>
+          Portfolio
         </button>
 
         <nav className="hidden md:flex items-center gap-8">

@@ -6,7 +6,6 @@ import { useScrollLock } from "@/hooks/use-scroll-lock";
 
 // Add your gallery images here. Place files in public/images/gallery/ and add paths below.
 const galleryImages = [
-  { src: "/images/profile.png", caption: "Profile" },
   { src: "/images/certi1.jpg", caption: "Certificate 1" },
   { src: "/images/cert2.jpg", caption: "Certificate 2" },
   { src: "/images/ach1.jpg", caption: "Achievement 1" },

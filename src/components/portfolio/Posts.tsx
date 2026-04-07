@@ -272,33 +272,6 @@ const Posts = () => {
                   {post.message}
                 </p>
 
-                {/* Reaction counts */}
-                {reactions[post.id] && reactions[post.id].length > 0 && (
-                  <div className="flex flex-wrap gap-2 pl-[52px]">
-                    {reactions[post.id].map((r) => (
-                      <span
-                        key={r.emoji}
-                        className="text-xs bg-secondary border border-border rounded-full px-2.5 py-1 hover:border-accent/30 hover:scale-105 transition-all duration-200 cursor-default"
-                      >
-                        {r.emoji} {r.count}
-                      </span>
-                    ))}
-                  </div>
-                )}
-
-                {/* Emoji tray */}
-                <div className="flex gap-1.5 pl-[52px] pt-1">
-                  {EMOJIS.map((emoji) => (
-                    <button
-                      key={emoji}
-                      onClick={() => reactToPost(post.id, emoji)}
-                      className="text-base hover:scale-130 active:scale-95 transition-transform duration-200 p-1.5 rounded-lg hover:bg-accent/10"
-                      title={`React with ${emoji}`}
-                    >
-                      {emoji}
-                    </button>
-                  ))}
-                </div>
               </motion.div>
             ))}
           </div>
