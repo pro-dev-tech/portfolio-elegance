@@ -36,7 +36,6 @@ const Achievements = () => {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
   const [offset, setOffset] = useState(0);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [buttonOffset, setButtonOffset] = useState(0);
   const animRef = useRef<number>(0);
   const lastTimeRef = useRef<number>(0);
   const isPausedRef = useRef(false);
@@ -45,11 +44,6 @@ const Achievements = () => {
   const count = achievementsData.length;
 
   useScrollLock(expandedIndex !== null);
-
-  // Sync button offset to active marquee card
-  useEffect(() => {
-    setButtonOffset(activeIndex);
-  }, [activeIndex]);
 
   const animate = useCallback((time: number) => {
     if (lastTimeRef.current === 0) lastTimeRef.current = time;
@@ -94,17 +88,6 @@ const Achievements = () => {
     }
     return items;
   };
-
-  // Button order: activeIndex always in center (position 1)
-  // left = prev, center = active (glows), right = next
-  const getCarouselOrder = (): number[] => {
-    const left = ((activeIndex - 1) + count) % count;
-    const center = activeIndex;
-    const right = (activeIndex + 1) % count;
-    return [left, center, right];
-  };
-
-  const carouselOrder = getCarouselOrder();
 
   return (
     <section id="achievements" className="section-padding border-t border-border">
@@ -175,28 +158,67 @@ const Achievements = () => {
           ))}
         </div>
 
-        {/* Button carousel — train-like left-to-right loop */}
-        <div className="mt-6 flex justify-center overflow-hidden">
-          <div className="relative flex gap-3" style={{ width: `${count * 180}px` }}>
-            {carouselOrder.map((idx, pos) => (
-              <motion.button
-                key={`btn-${idx}`}
-                layout
-                transition={{ type: "spring", stiffness: 200, damping: 26 }}
+        {/* Achievement cards list - glowing based on active marquee index */}
+        <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {achievementsData.map((achievement, idx) => {
+            const isActive = idx === activeIndex;
+            return (
+              <motion.div
+                key={achievement.title}
                 onClick={() => setExpandedIndex(idx)}
-                style={{ position: "relative" }}
                 className={`
-                  text-xs px-4 py-2 rounded-full border font-medium whitespace-nowrap flex-1 transition-colors duration-300
-                  ${pos === 1
-                    ? "border-accent bg-accent/15 text-accent shadow-[0_0_14px_hsl(var(--accent)/0.4)]"
-                    : "border-border bg-card text-muted-foreground hover:border-accent/30 hover:text-foreground hover:shadow-[0_0_10px_hsl(var(--accent)/0.1)]"
+                  cursor-pointer rounded-xl border p-5 transition-all duration-500 relative overflow-hidden
+                  ${isActive
+                    ? "border-accent/60 bg-accent/10 shadow-[0_0_24px_hsl(var(--accent)/0.25)]"
+                    : "border-border bg-card hover:border-accent/30 hover:bg-secondary/50"
                   }
                 `}
+                animate={{
+                  scale: isActive ? 1.02 : 1,
+                }}
+                transition={{ type: "spring", stiffness: 300, damping: 25 }}
               >
-                {achievementsData[idx].title}
-              </motion.button>
-            ))}
-          </div>
+                {/* Glow overlay for active card */}
+                {isActive && (
+                  <motion.div
+                    className="absolute inset-0 rounded-xl bg-gradient-to-br from-accent/10 via-transparent to-accent/5 pointer-events-none"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.4 }}
+                  />
+                )}
+                <div className="relative z-10">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Trophy
+                      size={16}
+                      className={`shrink-0 transition-colors duration-300 ${isActive ? "text-accent" : "text-muted-foreground"}`}
+                    />
+                    <h4 className={`font-display text-sm font-bold truncate transition-colors duration-300 ${isActive ? "text-foreground" : "text-foreground/80"}`}>
+                      {achievement.title}
+                    </h4>
+                  </div>
+                  <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2 mb-2">
+                    {achievement.description}
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <p className={`text-[10px] font-medium uppercase tracking-wider transition-colors duration-300 ${isActive ? "text-accent" : "text-muted-foreground"}`}>
+                      {achievement.date}
+                    </p>
+                    {isActive && (
+                      <motion.span
+                        initial={{ opacity: 0, x: -5 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        className="text-[10px] text-accent font-medium"
+                      >
+                        View details →
+                      </motion.span>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
 
