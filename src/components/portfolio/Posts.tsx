@@ -7,23 +7,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import {
   supabase,
-  EDGE_FUNCTION_VERIFY_URL,
-  EDGE_FUNCTION_PUBLISH_URL,
+  getEdgeFunctionUrl,
   getOrCreateVisitorId,
 } from "@/lib/supabase";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
-
-const EMOJIS = ["👍", "❤️", "🔥", "🚀", "💯", "👏", "😎"];
 
 interface Post {
   id: string;
   message: string;
   created_at: string;
-}
-
-interface ReactionCount {
-  emoji: string;
-  count: number;
 }
 
 const Posts = () => {
